@@ -1,0 +1,75 @@
+/* Apply Fira Code to code blocks and inline code */
+:root {
+    --md-code-font: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.md-typeset code,
+.md-typeset pre,
+.md-typeset .highlight pre,
+.md-typeset .highlight code {
+    font-family: var(--md-code-font);
+}
+
+/* stylesheets/custom.css */
+.md-typeset code {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-weight: 500;
+    background-color: var(--md-code-bg-color);
+    color: var(--md-code-fg-color);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+.func-list {
+    padding-left: 2em;
+    margin-left: 0;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+.func-list li,
+.func-signature {
+    display: block;
+    width: fit-content; /* Only as wide as content */
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-weight: 500;
+    line-height: 1.1em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: var(--md-code-bg-color); /* Adapts to dark/light */
+    background-color: var(--md-code-fg-color); /* Matches code blocks */
+    margin: 0em 0;
+    padding-left: 2.6em; /* push whole block */
+    text-indent: -2em; /* pull back first line */
+}
+
+.func-list li {
+    translate: -2em;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 10px;
+}
+
+.card {
+    background-color: var(--md-code-bg-color);
+    border-radius: 5px;
+    padding: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+}
+
+.card h3 {
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.card p {
+    margin: 0;
+}

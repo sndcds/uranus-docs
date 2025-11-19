@@ -1,0 +1,114 @@
+site_name: Uranus Docs
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.copy
+    - navigation.tabs
+    - navigation.tracking
+    - navigation.indexes
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.arithmatex
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.details
+
+extra_javascript:
+  - vendor/katex/katex.min.js
+  - vendor/katex/contrib/auto-render.min.js
+  - js/katex-init.js
+  - https://fonts.googleapis.com/css2?family=Fira+Code&display=swap
+
+extra_css:
+  - vendor/katex/katex.css
+  - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css
+  - css/extra.css
+
+nav:
+  - Uranus:
+      - index.md
+      - What is Uranus?: uranus/overview.md
+      - Use Cases: uranus/use-cases.md
+      - User Roles: uranus/user-roles.md
+      - Core Entities:
+          - uranus/core/index.md
+          - Organizer: uranus/core/organizer.md
+          - Venue: uranus/core/venue.md
+          - Space: uranus/core/space.md
+          - Event: uranus/core/event.md
+          - Event Date: uranus/core/event-date.md
+          - Event Contributor: uranus/core/event-contributor.md
+          - Image: uranus/core/image.md
+      - Language Support: uranus/language-support.md
+      - Technical Foundation:
+          - uranus/index.md
+          - API Server:
+              - uranus/api-server/index.md
+  - Database:
+      - database/index.md
+      - User:
+          - database/user/index.md
+          - user: database/user/user.md
+          - user_profile: database/user/user-profile.md
+          - user_role: database/user/user-role.md
+          - Accessing Events: database/user/event-access.md
+          - Examples: database/user/example.md
+      - Event:
+          - database/event/index.md
+          - event: database/event/event.md
+      - Event Date:
+          - database/event-date/index.md
+          - event_date: database/event-date/event-date.md
+  - API:
+      - api/index.md
+      - Permission System: api/permission-system.md
+      - Public:
+          - api/public/index.md
+          - GET:
+              - choosable: api/public/get/choosable.md
+              - events: api/public/get/events.md
+          - meta: api/public/meta.md
+          - event/images: api/public/event-images.md
+      - Admin:
+          - api/admin/index.md
+          - login: api/admin/login.md
+          - Create Event: api/admin/create-event.md
+      - Implementation: api/implementation.md
+  - Frontend:
+      - frontend/index.md
+      - Login: frontend/login.md
+      - New User: frontend/new-user.md
+      - Dashboard: frontend/dashboard.md
+      - Import: frontend/import.md
+      - Export: frontend/export.md
+  - Integration:
+      - integration/index.md
+  - Use of Standards:
+      - standards/index.md
+  - Ideas:
+      - ideas/index.md

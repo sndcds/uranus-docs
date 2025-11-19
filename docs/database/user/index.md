@@ -1,0 +1,5 @@
+# User
+
+In Uranus, user data is managed through a set of interconnected tables — user, user_profile, and user_role — that together provide a comprehensive framework for identity, personalization, and access control. The user table handles essential authentication and account management details, while user_profile extends this information with optional personal data and user preferences such as preferred language settings. Meanwhile, user_role defines permissions and access levels, enabling fine-grained control over what users can view or modify within the system.
+
+These user records are not isolated; they are linked to other core entities like organizers, venues, spaces, and events. This connectivity allows the platform to associate users with specific roles or responsibilities related to event creation, management, and administration. By structuring user data in this modular and relational way, Uranus supports secure, personalized, and collaborative workflows across the entire event ecosystem.
