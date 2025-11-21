@@ -106,6 +106,8 @@ nav:
       - Dashboard: frontend/dashboard.md
       - Import: frontend/import.md
       - Export: frontend/export.md
+      - Vue3 Implementation:
+          - frontend/implementation/index.md
   - Integration:
       - integration/index.md
   - Use of Standards:
