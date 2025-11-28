@@ -16,11 +16,12 @@ The `event` table stores core information about events within the platform. It c
 
 ### 2. Location & Venue Information
 
-- `venue_id`(INTEGER) – The venue hosting the event.   
+- `venue_id`(INTEGER, nullable) – The venue hosting the event.   
 If the venue is deleted, related events are deleted as well (ON DELETE CASCADE).
-- `space_id` (INTEGER) – Specific room or space in the venue where the event takes place.    
+- `space_id` (INTEGER, nullable) – Specific room or space in the venue where the event takes place.    
 If the space is deleted, this field becomes NULL (ON DELETE SET NULL).
-- `location_id` (INTEGER) – General location reference used for filtering and geography-based search.
+- `location_id` (INTEGER, nullable) – Optional location reference used when `venue_id` is not provided.   
+Allows specifying a location for an event without creating a venue record first.
 - `meeting_point` (TEXT) – Optional meeting location for participants (e.g., “Main entrance”, “Foyer”).
 - `online_event_url` (TEXT) – URL for online/virtual events (stream link, webinar room, etc.).
 
