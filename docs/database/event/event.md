@@ -2,27 +2,73 @@
 
 The `event` table stores core information about events within the platform. It captures essential details such as organizational context, scheduling constraints, descriptive content, and metadata required for displaying and managing events effectively.
 
-## Purpose
-
-This table is used to manage event-level data including age restrictions, textual descriptions, links, styling options, and relationships to organizers and spaces. It supports event creation, editing, and retrieval workflows, enabling both administrative control and front-end presentation of event content.
 
 ## Field Descriptions
 
-- `id` (INTEGER) – Unique identifier for the event. Primary key for internal referencing.
-- `created_at` (TIMESTAMP) – Timestamp when the event record was created.
-- `modified_at` (TIMESTAMP) – Timestamp of the last update to the event record.
-- `organizer_id` (INTEGER) – References the organizer responsible for the event.
-- `space_id` (INTEGER) – References the space where the event takes place.
-- `title` (VARCHAR) – Main title or name of the event.
-- `subtitle` (TEXT) – Subtitle or secondary title for the event.
-- `description` (TEXT) – Detailed textual description of the event.
-- `teaser_text` (TEXT) – Short teaser or promotional text for the event.
-- `source_url` (TEXT) – Source URL where the event data originates or is referenced.
-- `min_age` (INTEGER, nullable) – Minimum age required to attend the event. A NULL value indicates no minimum age restriction.
-- `max_age` (INTEGER, nullable) – Maximum age allowed to attend the event. A NULL value indicates no maximum age restriction.
-- `languages` (TEXT) – Languages used or supported during the event.
-- `participation_info` (TEXT) – Additional details about participation requirements or restrictions.
-- `meeting_point` (TEXT) – Information about the meeting location for the event.
-- `release_date` (DATE) – Date when the event information becomes publicly available.
-- `custom` (TEXT) – Custom metadata or JSON data for extended event information.
+
+### 1. Identification & Ownership
+
+- `id` (INTEGER, identity, primary key) – Unique identifier for the event.
+- `organizer_id` (INTEGER) – Defines which organizer owns the event.   
+   Events are deleted when the organizer is deleted (ON DELETE CASCADE).
+- `external_id`(INTEGER) – Optional ID used to link the event to an external system such as imports or APIs.
+
+
+### 2. Location & Venue Information
+
+- `venue_id`(INTEGER) – The venue hosting the event.   
+If the venue is deleted, related events are deleted as well (ON DELETE CASCADE).
+- `space_id` (INTEGER) – Specific room or space in the venue where the event takes place.    
+If the space is deleted, this field becomes NULL (ON DELETE SET NULL).
+- `location_id` (INTEGER) – General location reference used for filtering and geography-based search.
+- `meeting_point` (TEXT) – Optional meeting location for participants (e.g., “Main entrance”, “Foyer”).
+- `online_event_url` (TEXT) – URL for online/virtual events (stream link, webinar room, etc.).
+
+
+### 3. Core Content Fields
+
+- `title` (VARCHAR(255)) – Main title of the event.
+- `subtitle` (TEXT) – Optional subtitle or tagline.
+- `description` (TEXT) – Full descriptive text for the event.   
+Markdown formatted text.
+- `teaser_text` (TEXT) Short teaser or promotional description used for event listings.
+- `languages` (TEXT[]) – Languages available or spoken at the event (array of ISO codes).
+- `custom` (TEXT) – Free-form custom field for integrations or flexible data.
 - `style` (TEXT) – Styling or categorization information for event presentation.
+- `tags` (text[]) – Tag keywords for categorization and filtering.
+- `search_text` (TEXT, generated, stored) – Automatically created search index string based on other text fields. Normalized, unaccented, and lowercased for efficient text search.
+
+
+### 4. Age Restrictions & Audience
+
+- `min_age` (INTEGER) – Minimum recommended or allowed age.
+- `max_age` (INTEGER) – Maximum recommended age.
+
+
+### 5. Publication & Visibility
+
+- `release_date` (DATE) –Date when the event becomes visible or publicly available.
+- `release_status_id` (INTEGER) – Status of the event (e.g., draft, published, archived). Controls visibility and publishing workflow.
+
+
+### 6. Participation & Tickets
+
+- `participation_info` (TEXT) – Additional participation instructions or requirements (e.g., “Bring materials”, “Parents required”).
+- `price_type_id` (INTEGER) – Price model classification (free, paid, donation-based, etc.).
+- `currency_code` (VARCHAR(8)) - Currency code for event pricing (ISO 4217).
+- `ticket_advance` (BOOLEAN) – Whether tickets can or must be purchased in advance.
+- `ticket_required` (BOOLEAN) – Indicates that a ticket is required to attend.
+- `registration_required` (BOOLEAN) – Indicates that participants must register beforehand.
+- `max_attendees` (INTEGER) – Maximum number of participants allowed.
+
+
+### 7. Temporal Metadata (automatically generated by the database)
+- `created_at` (TIMESTAMP) – Timestamp when the event record was first created.
+- `modified_at` (TIMESTAMP) – Timestamp of the last update. NULL until modified.
+- `created_by` (INTEGE) – User ID of the person who created the event.
+
+
+### 8. Source & Metadata
+
+- `source_url` (TEXT) – Original source URL (for imported events or external references).
+- `occation_type_id` (INTEGER) – Internal classification of the event type or occasion (e.g., festival, workshop, lecture).

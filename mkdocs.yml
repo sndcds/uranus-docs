@@ -74,16 +74,10 @@ nav:
       - User:
           - database/user/index.md
           - user: database/user/user.md
-          - user_profile: database/user/user-profile.md
-          - user_role: database/user/user-role.md
-          - Accessing Events: database/user/event-access.md
-          - Examples: database/user/example.md
       - Event:
           - database/event/index.md
           - event: database/event/event.md
-      - Event Date:
-          - database/event-date/index.md
-          - event_date: database/event-date/event-date.md
+          - event_date: database/event/event-date.md
   - API:
       - api/index.md
       - Permission System: api/permission-system.md
