@@ -9,19 +9,15 @@ The `event` table stores core information about events within the platform. It c
 ### 1. Identification & Ownership
 
 - `id` (INTEGER, identity, primary key) – Unique identifier for the event.
-- `organizer_id` (INTEGER) – Defines which organizer owns the event.   
-   Events are deleted when the organizer is deleted (ON DELETE CASCADE).
+- `organizer_id` (INTEGER) – Defines which organizer owns the event. Events are deleted when the organizer is deleted (ON DELETE CASCADE).
 - `external_id`(INTEGER) – Optional ID used to link the event to an external system such as imports or APIs.
 
 
 ### 2. Location & Venue Information
 
-- `venue_id`(INTEGER, nullable) – The venue hosting the event.   
-If the venue is deleted, related events are deleted as well (ON DELETE CASCADE).
-- `space_id` (INTEGER, nullable) – Specific room or space in the venue where the event takes place.    
-If the space is deleted, this field becomes NULL (ON DELETE SET NULL).
-- `location_id` (INTEGER, nullable) – Optional location reference used when `venue_id` is not provided.   
-Allows specifying a location for an event without creating a venue record first.
+- `venue_id` (INTEGER, nullable) – The venue hosting the event. If the venue is deleted, the `venue_id` is set to `NULL` and the event itself is not deleted (ON DELETE SET NULL).
+- `space_id` (INTEGER, nullable) – Specific room or space in the venue where the event takes place. If the space is deleted, this field becomes NULL (ON DELETE SET NULL).
+- `location_id` (INTEGER, nullable) – Optional location reference used when `venue_id` is not provided. Allows specifying a location for an event without creating a venue record first.
 - `meeting_point` (TEXT) – Optional meeting location for participants (e.g., “Main entrance”, “Foyer”).
 - `online_event_url` (TEXT) – URL for online/virtual events (stream link, webinar room, etc.).
 
