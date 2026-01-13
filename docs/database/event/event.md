@@ -10,7 +10,7 @@ The `event` table stores core information about events within the platform. It c
 
 - `id` (INTEGER, identity, primary key) – Unique identifier for the event.
 - `organizer_id` (INTEGER) – Defines which organizer owns the event. Events are deleted when the organizer is deleted (ON DELETE CASCADE).
-- `external_id`(INTEGER) – Optional ID used to link the event to an external system such as imports or APIs.
+- `external_id`(TEXT) – Optional ID used to link the event to an external system such as imports or APIs.
 
 
 ### 2. Location & Venue Information

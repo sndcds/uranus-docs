@@ -85,50 +85,71 @@ The following are examples of payload sent to the API:
 ```
 
 
-#### Optional information
+#### Full example
 
 ```json
 {
-  // Basic data here ...
-  "space_id": 88, // To be used only if venue_id != null
-  "external_id": 872,
-  "subtitle": "Painting for Beginners",
-  "teaser_text": "Bring your own brushes!",
-  "participation_info": "Remember outdoor clothing",
-  "meeting_point": "Tourist Information",
-  "languages": ["de", "da", "en"],
-  "min_age": 3,
-  "max_age": 8,
-  "max_attendees": 8,
+  "title": "Autumn Music Festival",
+  "description": "A vibrant celebration of music, food, and culture in the heart of the city.",
+  "subtitle": "Experience the sounds of fall",
+  "teaser_text": "Join us for a weekend of unforgettable performances!",
+  "tags": ["music", "festival", "autumn", "outdoor"],
+  "source_url": "https://example.com/events/autumn-music-festival",
+  "online_event_url": null,
+  "organizer_id": 42,
+  "venue_id": null,
+  "space_id": null,
+  "external_id": "9876",
+  "participation_info": "Bring your own blanket and snacks.",
+  "occation_type_id": 2,
+  "languages": ["en", "de"],
+  "min_age": 12,
+  "max_age": 99,
+  "meeting_point": "Main entrance, City Park",
+  "max_attendees": 500,
   "price_type_id": 1,
+  "currency_code": "EUR",
   "ticket_advance": true,
   "ticket_required": true,
-  "registration_required": false,
-  "currency_code": "EUR",
-  "online_event_url": "https://zoom.grain.ione/s873a",
-  "occation_type_id": 3,
-  "source_url": "https://domain.com/event123",
-  "tags": ["music", "synthesizer", "experimental"],
-  "types": [
-    {"type_id": 1, "genre_id": 66},
-    {"type_id": 1, "genre_id": 1}
-  ],
+  "registration_required": true,
+  "custom": "Special VIP access for sponsors",
+  "style": "outdoor festival",
+  "release_status_id": 1,
+  "release_date": "2025-09-01",
+  "location": {
+    "name": "City Park",
+    "description": "A large public park in downtown",
+    "street": "Park Avenue",
+    "house_number": "123",
+    "postal_code": "10115",
+    "city": "Berlin",
+    "country_code": "DE",
+    "state_code": "BE",
+    "latitude": 52.520008,
+    "longitude": 13.404954
+  },
   "dates": [
     {
-      "start_date": "2025-12-05", // Required!
-      "start_time": "10:00", // Required!
-      "end_date": "2025-12-06", 
-      "end_time": "15:00",
-      "entry_time": "09:30",
-      "all_day": true
-    },
-    // Add more dates if needed
+      "start_date": "2025-10-10",
+      "start_time": "12:00",
+      "end_date": "2025-10-12",
+      "end_time": "22:00",
+      "entry_time": "11:30",
+      "venue_id": null,
+      "space_id": null,
+      "all_day": false
+    }
   ],
-  "release_date": "2025-11-20",
-  "release_status_id": 2,
-
-  "custom": "...", // Used for custom text information
-  "style": "...", // Used for custom style codes
+  "types": [
+    {
+      "type_id": 1,
+      "genre_id": 5
+    },
+    {
+      "type_id": 2,
+      "genre_id": null
+    }
+  ]
 }
 ```
 

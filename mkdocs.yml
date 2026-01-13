@@ -19,6 +19,7 @@ theme:
     - navigation.tabs
     - navigation.tracking
     - navigation.indexes
+    - navigation.instant: false
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -83,6 +84,7 @@ nav:
       - Permission System: api/permission-system.md
       - Public:
           - api/public/index.md
+          - /login: api/public/login.md
           - GET:
               - choosable: api/public/get/choosable.md
               - events: api/public/get/events.md
@@ -90,7 +92,16 @@ nav:
           - event/images: api/public/event-images.md
       - Admin:
           - api/admin/index.md
-          - login: api/admin/login.md
+          - /permissions/list: api/admin/get-permissions-list.md
+          - /user/profile: api/admin/get-user-profile.md
+          - /user/messages: api/admin/get-user-messages.md
+          - /user/todos: api/admin/get-user-todos.md
+          - /user/todo/#: api/admin/get-user-todo.md
+          - /user/choosable-organizations: api/admin/get-user-choosable-organizations.md
+          - /user/event/notifications: api/admin/get-user-event-notifications.md
+          - /user/choosable-event-places: api/admin/get-user-choosable-event-spaces.md
+          - /organization/#: api/admin/get-organization.md
+          - /organization/#/member/#/permissions: api/admin/get-organization-member-permissions.md
           - Create Event: api/admin/create-event.md
       - Implementation: api/implementation.md
   - Frontend:
