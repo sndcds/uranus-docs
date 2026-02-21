@@ -52,8 +52,7 @@ extra_css:
 
 nav:
   - Uranus:
-      - index.md
-      - What is Uranus?: uranus/overview.md
+      - uranus/index.md
       - Use Cases: uranus/use-cases.md
       - User Roles: uranus/user-roles.md
       - Core Entities:
@@ -70,6 +69,9 @@ nav:
           - uranus/index.md
           - API Server:
               - uranus/api-server/index.md
+  - Pluto:
+      - pluto/index.md
+      - Pluto API: pluto/api/index.md
   - Database:
       - database/index.md
       - User:

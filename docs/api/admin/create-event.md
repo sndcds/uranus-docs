@@ -18,35 +18,23 @@ By supporting this workflow, the API makes it easy to build user-friendly and fa
 
 # Create Basic Event
 
-To create a new event via the API, you need to build a structured JSON object containing all required fields such as organizer_id, venue_id, title, description, and date-related information.
+To create a new event via the API, you need to build a structured JSON object containing all required fields such as organization_id, venue_id, title, description, and date-related information.
 
 !!! note
     Creating an event is only allowed for authenticated users who have permission to create events. Make sure the user is logged in and has the appropriate roles or access rights.
-
-
-## Variants
-
-There are two ways to specify the location of an event:
-
-1.	**Using an existing venue:**
-    - Set the venue_id field to the ID of the venue.
-    - location should be omitted or null.
-    - The event will be associated with the existing venue.
-2.	**Creating a custom location inline:**
-    - Omit venue_id and instead provide a location object with address and coordinates.
-    - The API will automatically create a new entry in the event_locations table and associate the event with it.
-    - Useful when the event takes place somewhere that is not yet in the system.
-
 
 
 ## Example JSON Payload
 
 The following are examples of payload sent to the API:
 
-#### Event using an existing venue, required data only
+#### Minimal example
 ```json
 {
-  "organizer_id": 5,
+  "release_status": "review",
+  "content_language": "de",
+  "organization_id": 5,
+  "organization_key": "3fx1aWgqc7Pe5oJJhAZ2TL",
   "title": "Recorder Recorder",
   "description": "Recorder Recorder ist das elektroakustische ...",
   "dates": [
@@ -59,36 +47,14 @@ The following are examples of payload sent to the API:
 }
 ```
 
-#### Event using inline location creation, required data only
-```json
-{
-  "organizer_id": 42,
-  "title": "Art Workshop",
-  "description": "Learn watercolor painting in this beginner-friendly workshop.",
-  "dates": [
-    {
-      "start_date": "2025-12-05",
-      "start_time": "10:00"
-    }
-  ],
-  "location": {
-    "name": "KRAN", // Optional
-    "street": "Am Nordertor",
-    "postal_code": "24939",
-    "city": "Flensburg",
-    "country_code": "DE",
-    "state_code": "SH", // Optional
-    "latitude": 54.23, // Optional
-    "longitude": 9.873 // Optional
-  },
-}
-```
-
 
 #### Full example
 
 ```json
 {
+  "release_status": "released",
+  "release_date": "2025-09-01",
+  "content_language": "de",
   "title": "Autumn Music Festival",
   "description": "A vibrant celebration of music, food, and culture in the heart of the city.",
   "subtitle": "Experience the sounds of fall",
@@ -96,7 +62,8 @@ The following are examples of payload sent to the API:
   "tags": ["music", "festival", "autumn", "outdoor"],
   "source_url": "https://example.com/events/autumn-music-festival",
   "online_event_url": null,
-  "organizer_id": 42,
+  "organization_id": 42,
+  "organization_key": "3fx1aWgqc7Pe5oJJhAZ2TL",
   "venue_id": null,
   "space_id": null,
   "external_id": "9876",
@@ -114,20 +81,6 @@ The following are examples of payload sent to the API:
   "registration_required": true,
   "custom": "Special VIP access for sponsors",
   "style": "outdoor festival",
-  "release_status_id": 1,
-  "release_date": "2025-09-01",
-  "location": {
-    "name": "City Park",
-    "description": "A large public park in downtown",
-    "street": "Park Avenue",
-    "house_number": "123",
-    "postal_code": "10115",
-    "city": "Berlin",
-    "country_code": "DE",
-    "state_code": "BE",
-    "latitude": 52.520008,
-    "longitude": 13.404954
-  },
   "dates": [
     {
       "start_date": "2025-10-10",

@@ -32,7 +32,7 @@ Uranus fits well into cultural portals, city event calendars, and community-driv
 ## Additional Integration Scenarios
 - **Mobile Apps:** Pull event and space data directly into native iOS/Android apps.
 - **Digital Signage:** Use API to display up-to-date schedules on physical info displays.
-- **Search Engines & Aggregators:** Feed structured event data (e.g., via Schema.org) for better indexing and visibility.
+- **Search Engines & Aggregators:** Feed structured venue and event data (e.g., via Schema.org) for better indexing and visibility.
 - **Ticketing Systems:** Link events with external ticketing or registration tools.
 
 

@@ -1,4 +1,4 @@
-# API
+# Uranus API
 
 Uranus implements a RESTful API (Representational State Transfer) which is an architectural style for designing networked applications, particularly web services. It defines a set of constraints that, when followed, make an API scalable, simple, and efficient.
 

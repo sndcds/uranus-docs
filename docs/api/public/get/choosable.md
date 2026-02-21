@@ -1,4 +1,4 @@
-# Choosable API Endpoints
+# Get Choosable API Endpoints
 
 The **Choosable** endpoints provide lists of items that can be selected or referenced by other parts of the URANUS system.  
 Each endpoint returns structured data representing a set of *choices* — for example, event categories, venues, or ticket types.
