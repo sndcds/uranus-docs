@@ -55,8 +55,6 @@ Returns a summary of events grouped by venue, including the number of event date
 
 ### Accessibility Flags (bitmask)
 
-### Accessibility Flags (bitmask)
-
 | Flag | ID | Value |
 |------|----|-------|
 | Wheelchair accessible | 0 | 1 |
@@ -85,13 +83,53 @@ Returns a summary of events grouped by venue, including the number of event date
 | Keyboard navigation | 46 | 70368744177664 |
 | Voice command support | 47 | 140737488355328 |
 
-### Visitor Info Flags (bitmask)
 
-| Flag | Value |
-|------|-------|
-| Info desk | 1 |
-| Guided tour | 2 |
-| Workshop available | 4 |
+### Visitor Information Flags (bitmask)
+
+| Flag | ID | Value |
+|------|----|-------|
+| Family Friendly | 0 | 1 |
+| Child Suitable | 1 | 2 |
+| Youth/Adult Suitable | 2 | 4 |
+| Queer Friendly | 3 | 8 |
+| Senior Friendly | 4 | 16 |
+| Pet Friendly | 5 | 32 |
+| Outdoor | 7 | 128 |
+| Indoor | 8 | 256 |
+| Weather Alternative | 10 | 1024 |
+| Nature Location | 11 | 2048 |
+| Online Only Event | 14 | 16384 |
+| Seating Available | 12 | 4096 |
+| Shade Available | 13 | 8192 |
+| Free Water | 15 | 32768 |
+| Food Stalls | 16 | 65536 |
+| Vegetarian Options | 17 | 131072 |
+| Vegan Options | 18 | 262144 |
+| Picnic Allowed | 19 | 524288 |
+| Alcohol Free | 20 | 1048576 |
+| Free Seating | 21 | 2097152 |
+| Shuttle Service | 22 | 4194304 |
+| USB Charging | 23 | 8388608 |
+| Power Sockets Available | 24 | 16777216 |
+| Quiet Room | 27 | 134217728 |
+| Photography Allowed | 25 | 33554432 |
+| Streaming Available | 26 | 67108864 |
+| Free Wifi | 29 | 536870912 |
+| Wifi with Login | 30 | 1073741824 |
+| Mobile Network Available | 31 | 2147483648 |
+| Event App Available | 32 | 4294967296 |
+| Digital Info Screens | 33 | 8589934592 |
+| Digital Program Guide | 34 | 17179869184 |
+| Awareness Team Present | 28 | 268435456 |
+| Security Staff On Site | 35 | 34359738368 |
+| Bag Checks | 36 | 68719476736 |
+| Access Control | 37 | 137438953472 |
+| First Aid Available | 38 | 274877906944 |
+| Police Presence | 39 | 549755813888 |
+| Fire Safety Measures | 40 | 1099511627776 |
+| Surveillance Cameras | 41 | 2199023255552 |
+| Access Wristbands | 42 | 4398046511104 |
+
 
 ### Sample JSON Response
 
