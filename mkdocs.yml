@@ -106,6 +106,7 @@ nav:
           - /organization/#/member/#/permissions: api/admin/get-organization-member-permissions.md
           - Create Event: api/admin/create-event.md
       - Implementation: api/implementation.md
+      - Rate Limiting: api/rate-limiting.md
   - Frontend:
       - frontend/index.md
       - Login: frontend/login.md
