@@ -67,7 +67,7 @@ The following are examples of payload sent to the API:
   "space_id": null,
   "external_id": "9876",
   "participation_info": "Bring your own blanket and snacks.",
-  "occation_type_id": 2,
+  "occasion_type_id": 2,
   "languages": ["en", "de"],
   "min_age": 12,
   "max_age": 99,
