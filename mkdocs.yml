@@ -86,12 +86,18 @@ nav:
       - Permission System: api/permission-system.md
       - Public:
           - api/public/index.md
-          - /login: api/public/login.md
-          - GET:
-              - choosable: api/public/get/choosable.md
-              - events: api/public/get/events.md
+          - login: api/public/login.md
+          - get:
+              - lookup:
+                  - api/public/get/lookup/index.md
+              - choosable:
+                  - api/public/get/choosable/index.md
+              - image: api/public/get/image.md
+              - event:
+                  - api/public/get/event/index.md
+                  - event: api/public/get/event/event.md
+                  - events: api/public/get/event/events.md
           - meta: api/public/meta.md
-          - event/images: api/public/event-images.md
       - Admin:
           - api/admin/index.md
           - /permissions/list: api/admin/get-permissions-list.md

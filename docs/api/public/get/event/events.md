@@ -25,7 +25,6 @@ Returns a summary of events grouped by venue, including the number of event date
 | Filter                | Type                                       | Allowed Values / Examples      | Notes                                                             |
 |-----------------------|--------------------------------------------|--------------------------------|-------------------------------------------------------------------|
 | `categories`          | comma-separated ints                       | `1,3,6`                        | Filter by category IDs.                                           |
-| `past`                | boolean                                    | `true`, `false`                | Include past events if `true`. Defaults to future events only.    |
 | `start`               | date string                                | `YYYY-MM-DD`, e.g., `2026-01-01` | Event start date ≥ this value.                                    |
 | `end`                 | date string                                | `YYYY-MM-DD`, e.g., `2026-12-31` | Event end date ≤ this value.                                      |
 | `last_event_start_at` | timestamp                                  | `YYYY-MM-DDTHH:MM:SSZ`         | Pagination: only events after this datetime.                      |
