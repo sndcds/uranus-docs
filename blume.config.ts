@@ -19,12 +19,10 @@ export default defineConfig({
     ],
   },
 
+  redirects: [{ from: "/en", to: "/", status: 301 }],
+
   navigation: {
     tabs: [
-      {
-        label: "Overview",
-        path: "/",
-      },
       {
         label: "Uranus API",
         path: "/api-reference",
