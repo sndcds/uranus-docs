@@ -10,6 +10,8 @@ pnpm dev
 ```
 
 Open the server's root URL (normally `http://localhost:4321/`) for the entry page.
+The language-prefixed URL `/en` redirects to `/`; the documentation currently
+uses URLs without a language prefix.
 
 Check the documentation and build the static site:
 
@@ -30,7 +32,8 @@ including its `index.html`.
 
 `blume.config.ts` defines the content root, OpenAPI sources and navigation tabs.
 Each tab's `path` identifies its section and links to that section's entry page.
-The overview uses `/`; the Uranus API uses `/api-reference`.
+The Uranus API tab uses `/api-reference`. The site title, **Uranus Docs**, links
+back to `/` from every section, so the entry page does not need its own tab.
 
 ## Adding another documentation section
 
