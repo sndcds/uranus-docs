@@ -1,0 +1,117 @@
+---
+title: Uranus API
+description: Access events, venues, organizations and other cultural data through the Uranus API.
+---
+
+The **Uranus API** provides structured data for events, venues, organizations and other cultural information.
+
+It is used by kulturbytes and can also be used by other websites, applications and regional portals.
+
+## Base URL
+
+```text
+https://api.kulturbytes.de/api
+```
+
+## Public API
+
+Public endpoints do not require authentication.
+
+For example:
+
+```http
+GET /events
+```
+
+returns public events.
+
+Query parameters can be combined to filter the results:
+
+```http
+GET /events?start=2026-09-01&lat=54.79&lon=9.43&radius=20km
+```
+
+The API is designed so that clients can start with a simple request and add filters as needed.
+
+## Response format
+
+Responses are returned as JSON.
+
+```json
+{
+  "service": "Uranus",
+  "api_version": "1.0",
+  "response_type": "events",
+  "status": "success",
+  "data": {}
+}
+```
+
+Property names use **snake_case**:
+
+```json
+{
+  "event_uuid": "...",
+  "event_name": "Example Event",
+  "start_date": "2026-09-11"
+}
+```
+
+## API sections
+
+### Events
+
+Find events and event dates.
+
+* [Events](./events)
+* [Event details](./event)
+* [Event filters](./event-filters)
+
+### Places
+
+Find venues and spaces where events take place.
+
+* [Venues](./venues)
+* [Spaces](./spaces)
+
+### Organizations
+
+Access organizations and their relationships.
+
+* [Organizations](./organizations)
+
+### Images
+
+Access images used by Uranus.
+
+* [Images](./images)
+
+## Authentication
+
+The public API does not require authentication.
+
+Administrative endpoints require a user account and appropriate permissions.
+
+See [Authentication](./authentication) for details.
+
+## API conventions
+
+A few conventions are used throughout the API:
+
+* UUIDs identify entities.
+* Dates and times use ISO 8601 formats.
+* JSON property names use `snake_case`.
+* Query parameters are used for filtering and selecting data.
+* Public endpoints return only publicly available data.
+
+## Getting started
+
+If you want to display cultural events on your own website, start with:
+
+```http
+GET /events
+```
+
+Then add filters for dates, locations, categories or other properties you need.
+
+See [Events](./events) for the complete list of parameters and examples.

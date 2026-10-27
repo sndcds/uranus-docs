@@ -1,0 +1,40 @@
+
+# Dependencies
+node_modules/
+
+# Blume generated Astro runtime
+.blume/
+.blume-verify/
+
+# Astro generated files
+.astro/
+
+# Production build output
+dist/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# JetBrains IDEs (WebStorm, IntelliJ IDEA)
+.idea/
+
+# Local editor files
+*.swp
+*.swo
+*~
+
+# TypeScript build information
+*.tsbuildinfo
