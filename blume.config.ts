@@ -2,7 +2,7 @@ import { defineConfig } from "blume";
 
 export default defineConfig({
   title: "Uranus Docs",
-  description: "Documentation for the Uranus API.",
+  description: "Technical documentation for Uranus and related services.",
 
   content: {
     root: "docs",
@@ -22,9 +22,12 @@ export default defineConfig({
   navigation: {
     tabs: [
       {
-        label: "Public API",
-        href: "/api-reference",
-        path: ""
+        label: "Overview",
+        path: "/",
+      },
+      {
+        label: "Uranus API",
+        path: "/api-reference",
       },
     ],
   },
