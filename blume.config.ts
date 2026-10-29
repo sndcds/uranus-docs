@@ -27,6 +27,10 @@ export default defineConfig({
         label: "Uranus API",
         path: "/api-reference",
       },
+      {
+        label: "Reference data",
+        path: "/reference",
+      },
     ],
   },
 });

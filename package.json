@@ -5,9 +5,16 @@
   "scripts": {
     "dev": "blume dev",
     "build": "blume build",
-    "doctor": "blume doctor"
+    "doctor": "blume doctor",
+    "test": "node --import tsx tests/reference-data.test.mjs"
   },
   "dependencies": {
-    "blume": "^1.7.3"
+    "blume": "^1.7.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "tsx": "^4.23.15"
   }
 }
