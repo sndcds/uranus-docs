@@ -34,6 +34,52 @@ paths:
         Cursor pagination is best suited for endless presentation of events, such as event lists on websites.  
         This is the pagination strategy used by kulturbytes websites.  
         Both `last_event_start_at` and `last_event_date_uuid` must be provided together.
+        
+        ## Response properties
+  
+        The response contains an array of events and pagination information.
+
+        ### Required event properties
+        
+        Each event object includes the following properties:
+        
+          - `search_rank` — Search relevance rank.
+          - `uuid` — Unique identifier of the event.
+          - `date_uuid` — Unique identifier of the event date.
+          - `date_slug` — Slug identifying the event date.
+          - `title` — Event title.
+          - `start_date` — Start date in `YYYY-MM-DD` format.
+          - `start_time`, — Start time in `HH-MM` format.
+          - `org_uuid` — Unique identifier of the organizing organization.
+          - `org_name` — Name of the organizing organization.
+          
+          These properties are included in each event object, even when their values are `null` or their arrays are empty.
+        
+        ### Optional event properties
+
+        Other properties may be omitted from an event object when no value is available. These include, for example:
+        
+          - `summary`
+          - `end_date`, `end_time`, `entry_time`, `duration`, `all_day`
+          - `org_postal_code`, `org_city`, `org_country`
+          - `space_uuid`, `space_name`, `space_accessibility_flags`
+          - `venue_uuid`, `venue_name`, `venue_city`, `venue_street`, `venue_house_number`, `venue_postal_code`, `venue_state`, `venue_country`, `venue_lat`, `venue_lon`
+          - `image_uuid`, `image_path`, `image_ai_label`
+          - `categories`, `event_types`, `languages`, `tags`
+          - `price_type`, `min_price`, `max_price`, `currency`
+          - `ticket_link`
+          - `min_age`, `max_age`
+          - `visitor_info_flags`, `release_status`
+        
+        ### Pagination properties
+        
+        The `data` object contains the following pagination properties:
+        
+          - `events` — Array of matching events. An empty result is returned as an empty array.
+          - `last_event_date_uuid` — Date UUID of the last returned event; may be `null` when no events are returned.
+          - `last_event_start_at` — Start timestamp of the last returned event; may be `null` when no events are returned.
+          
+          For cursor pagination, pass both `last_event_start_at` and `last_event_date_uuid` from the previous response to retrieve the next page.
 
       parameters:
         - $ref: '#/components/parameters/EventOffsetParameter'
