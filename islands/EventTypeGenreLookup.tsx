@@ -2,11 +2,10 @@ import { useCallback, useId, useState } from "react";
 import { useApiData } from "../src/hooks/useApiData";
 import {
   filterEventTypes,
-  LANGUAGES,
   LOOKUP_API_URL,
   parseEventTypeGenreLookup,
-  type Language,
 } from "../src/lib/event-type-genre";
+import { LANGUAGES, type Language } from "../src/lib/languages";
 import "../src/styles/reference-data.css";
 
 // Fetch as soon as the page loads, rather than waiting for it to scroll into view.

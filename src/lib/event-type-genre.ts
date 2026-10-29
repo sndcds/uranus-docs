@@ -1,14 +1,8 @@
 import { ApiError } from "./api.ts";
+import type { Language } from "./languages.ts";
 
 export const LOOKUP_API_URL = "https://api.kulturbytes.de/api/event/type-genre-lookup";
 
-export const LANGUAGES = [
-  { code: "en", name: "English" },
-  { code: "de", name: "Deutsch" },
-  { code: "da", name: "Dansk" },
-] as const;
-
-export type Language = (typeof LANGUAGES)[number]["code"];
 export type Genre = { id: string; name: string };
 export type EventType = { id: string; name: string; genres: Genre[] };
 

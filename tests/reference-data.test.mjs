@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ApiError, fetchJson } from "../src/lib/api.ts";
 import { filterEventTypes, parseEventTypeGenreLookup } from "../src/lib/event-type-genre.ts";
+import { filterLicenseTypes, parseLicenseTypes } from "../src/lib/license-types.ts";
 
 const types = {
   "10": { name: "Other", genres: null },
@@ -70,6 +71,65 @@ test("filters by type, genre or ID, and keeps all genres when the type itself ma
   assert.deepEqual(filterEventTypes(result, "no such genre"), []);
   assert.deepEqual(filterEventTypes(result, "  "), result);
   assert.equal(result[0].genres.length, 3);
+});
+
+const licenses = [
+  { key: "mit", name: "MIT License", description: null },
+  { key: "cc-by", name: "CC BY – Attribution", description: "Credit the creator." },
+  { key: "all-rights-reserved", name: "All Rights Reserved" },
+];
+
+test("reads the license API envelope and preserves keys, text and response order", () => {
+  const data = [...licenses, {
+    key: "custom-key",
+    name: "<script>alert(1)</script> & {text}",
+    description: "<b>Plain text</b>",
+  }];
+  const result = parseLicenseTypes({
+    status: 200,
+    metadata: { language: "en", license_type_count: data.length },
+    data,
+  });
+  assert.deepEqual(result, data.map((item) => ({ ...item, description: item.description ?? null })));
+  assert.deepEqual(parseLicenseTypes({ status: 200, data: [] }), []);
+  assert.equal(parseLicenseTypes({ data: [
+    { key: "cc0", name: "CC0 – Gemeinfrei", description: null },
+  ] })[0].name, "CC0 – Gemeinfrei");
+});
+
+test("rejects license API errors, malformed entries and duplicate keys", () => {
+  for (const payload of [
+    null,
+    [],
+    {},
+    { status: 500, data: licenses },
+    { data: null },
+    { data: {} },
+    ...[
+      null,
+      [],
+      { key: 1, name: "License" },
+      { key: null, name: "License" },
+      { key: "  ", name: "License" },
+      { key: "cc-by", name: null },
+      { key: "cc-by", name: "" },
+      { key: "cc-by", name: "License", description: 42 },
+    ].map((item) => ({ data: [...licenses, item] })),
+    { data: [licenses[0], licenses[0]] },
+  ]) {
+    assert.throws(() => parseLicenseTypes(payload), ApiError);
+  }
+});
+
+test("filters license names, keys and optional descriptions without changing the source", () => {
+  const result = parseLicenseTypes({ data: licenses });
+  assert.deepEqual(filterLicenseTypes(result, "  MIT LICENSE  "), [result[0]]);
+  assert.deepEqual(filterLicenseTypes(result, "CC-BY"), [result[1]]);
+  assert.deepEqual(filterLicenseTypes(result, "CREATOR"), [result[1]]);
+  assert.deepEqual(filterLicenseTypes(result, "rights"), [result[2]]);
+  assert.deepEqual(filterLicenseTypes(result, "no such license"), []);
+  assert.deepEqual(filterLicenseTypes(result, "  "), result);
+  assert.deepEqual(result, licenses.map((item) => ({ ...item, description: item.description ?? null })));
 });
 
 test("fetches fresh JSON without credentials and preserves cancellation", async (context) => {
