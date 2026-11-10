@@ -8,6 +8,11 @@ export default defineConfig({
     root: "docs",
   },
 
+  deployment: {
+    site: "https://uranus.kulturbytes.de",
+    base: "/docs",
+  },
+
   openapi: {
     enabled: true,
     sources: [
