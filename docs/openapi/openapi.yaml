@@ -405,27 +405,28 @@ paths:
       operationId: getChoosableCountries
       summary: Get choosable countries
       description: |-
-        Returns all countries available for selection.
+        Returns countries with names localized for the supplied language.
+        The lang value is passed to the database without explicit language-code
+        validation and defaults to en when omitted.
 
-        Country names are localized according to the requested
-        ISO 639-1 language code.
-
-        If no countries are found for the requested language, the endpoint
-        still returns HTTP 200 with an empty data array.
+        If no rows match the requested language, the endpoint returns HTTP 200
+        with data set to null and metadata.country_count set to 0.
       parameters:
         - name: lang
           in: query
           required: false
-          description: ISO 639-1 language code. Defaults to English.
+          description: >-
+            Language code used to localize country names. Defaults to en when
+            omitted. The handler does not validate its length or supported value.
           schema:
             type: string
-            minLength: 2
-            maxLength: 2
             default: en
             example: en
       responses:
         "200":
-          description: Countries found, or no countries available for the requested language.
+          description: >-
+            Countries found, or no matching rows. When no rows match, data is
+            null and country_count is 0.
           content:
             application/json:
               schema:
@@ -467,7 +468,7 @@ paths:
                   language: en
                   response_time_ms: 95
                 data: null
-                message: Internal server error
+                message: database error
 
   /api/choosable-currencies:
     get:
@@ -3690,6 +3691,7 @@ components:
         - response_type
         - status
         - timestamp
+        - metadata
         - data
       properties:
         service:
@@ -3718,14 +3720,14 @@ components:
         metadata:
           $ref: "#/components/schemas/GetChoosableCountries.ChoosableCountriesMetadata"
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableCountries.Country"
-          description: List of available countries.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: countries found
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableCountries.Country"
+            - type: "null"
+          description: >-
+            List of available countries, or null when no rows match the
+            requested language.
       additionalProperties: false
     GetChoosableCountries.GetChoosableCountriesResponse500:
       type: object
@@ -3769,7 +3771,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: countries found
+          example: database error
       additionalProperties: false
     GetChoosableCountries.ResponseEnvelope:
       type: object
