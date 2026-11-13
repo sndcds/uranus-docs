@@ -483,21 +483,30 @@ paths:
     get:
       operationId: getChoosableCurrencies
       summary: Get choosable currencies
-      description: Returns the available currencies localized in the requested language.
+      description: |-
+        Returns currency codes and names localized for the supplied language.
+        The lang value is passed to the database without explicit language-code
+        validation and defaults to en when omitted.
+
+        If no rows match the requested language, the endpoint returns HTTP 200
+        with an empty data array. metadata.currency_count is included only when
+        at least one currency is returned.
       parameters:
         - name: lang
           in: query
           required: false
-          description: ISO 639-1 language code used for localized currency names.
+          description: >-
+            Language code used to localize currency names. Defaults to en when
+            omitted. The handler does not validate its length or supported value.
           schema:
             type: string
-            minLength: 2
-            maxLength: 2
             default: en
             example: en
       responses:
         "200":
-          description: Currencies successfully retrieved.
+          description: >-
+            Currencies found, or no matching rows. When no rows match, data is
+            an empty array and currency_count is omitted.
           content:
             application/json:
               schema:
@@ -509,6 +518,7 @@ paths:
                 status: 200
                 timestamp: 2026-09-20T10:39:00Z
                 metadata:
+                  currency_count: 3
                   language: en
                   response_time_ms: 12
                 data:
@@ -3914,22 +3924,29 @@ components:
       additionalProperties: false
     GetChoosableCurrencies.ChoosableCurrenciesMetadata:
       type: object
-      required:
-        - language
-        - response_time_ms
       properties:
+        currency_count:
+          type: integer
+          minimum: 0
+          description: >-
+            Number of currencies returned. Included only when at least one
+            currency matches the requested language.
+          example: 3
         language:
           type: string
-          minLength: 2
-          maxLength: 2
-          description: ISO 639-1 language code used for localization.
+          description: >-
+            Language value used to select localized names. Defaults to en when
+            omitted; the handler does not validate its length or supported value.
           example: en
         response_time_ms:
           type: integer
           minimum: 0
-          description: Time required to generate the response in milliseconds.
+          description: Server-side response time in milliseconds.
           example: 12
-      description: Metadata returned with the list of currencies.
+      required:
+        - language
+        - response_time_ms
+      description: Metadata returned by the choosable currencies endpoint.
       additionalProperties: false
     GetChoosableCurrencies.Currency:
       type: object
@@ -3959,6 +3976,7 @@ components:
         - response_type
         - status
         - timestamp
+        - metadata
         - data
       properties:
         service:
@@ -3990,11 +4008,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/GetChoosableCurrencies.Currency"
-          description: Available currencies.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: Database error.
+          description: >-
+            Available currencies; an empty array is returned when no rows match
+            the requested language.
       description: Common response envelope used by the API.
       additionalProperties: false
     GetChoosableCurrencies.GetChoosableCurrenciesResponse500:
@@ -4030,8 +4046,7 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T10:39:00Z
         metadata:
-          type: object
-          description: Response metadata.
+          $ref: "#/components/schemas/GetChoosableCurrencies.ChoosableCurrenciesMetadata"
         data:
           anyOf:
             - {}
