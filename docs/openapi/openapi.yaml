@@ -18,69 +18,72 @@ paths:
       summary: 1. Get events
       description: |-
         Returns events matching the supplied filters.
-      
-        GET query parameters are validated by the API.
-        Unknown query parameters result in a bad-request response.
-        Array-valued filters are supplied as comma-separated values.
-      
-        Pagination – The API supports two pagination strategies.
-      
-        Offset pagination:  
-        Use `offset` together with `limit` for ad hoc requests where a specific result page is needed.
-      
-        Cursor pagination:        
-        Use `last_event_start_at` together with `last_event_date_uuid` for stable, continuous pagination through the event list.
-      
-        Cursor pagination is best suited for endless presentation of events, such as event lists on websites.  
-        This is the pagination strategy used by kulturbytes websites.  
-        Both `last_event_start_at` and `last_event_date_uuid` must be provided together.
-        
+
+        GET query parameters are validated by the API. Unknown query parameters
+        result in a bad-request response. Array-valued filters are supplied as
+        comma-separated values.
+
+        Pagination supports offset pagination with offset and limit, or cursor
+        pagination with last_event_start_at and last_event_date_uuid. Both cursor
+        values must be provided together. Reuse pagination_reference_date from
+        the previous response as start on subsequent cursor requests so the
+        result set remains anchored to the same date.
+
+        Include reverse_order in the query to return events in reverse order.
+        The API checks whether this parameter is present; its value is ignored,
+        so even reverse_order=false enables reverse ordering.
+
+        When filtering by a portal, geometry can optionally select a specific
+        portal geometry. geometry has no effect without portal.
+
         ## Response properties
-  
-        The response contains an array of events and pagination information.
+
+        The response data contains an events array and pagination information.
 
         ### Required event properties
-        
-        Each event object includes the following properties:
-        
-          - `search_rank` — Search relevance rank.
-          - `uuid` — Unique identifier of the event.
-          - `date_uuid` — Unique identifier of the event date.
-          - `date_slug` — Slug identifying the event date.
-          - `title` — Event title.
-          - `start_date` — Start date in `YYYY-MM-DD` format.
-          - `start_time`, — Start time in `HH-MM` format.
-          - `org_uuid` — Unique identifier of the organizing organization.
-          - `org_name` — Name of the organizing organization.
-          
-          These properties are included in each event object, even when their values are `null` or their arrays are empty.
-        
-        ### Optional event properties
 
-        Other properties may be omitted from an event object when no value is available. These include, for example:
-        
-          - `summary`
-          - `end_date`, `end_time`, `entry_time`, `duration`, `all_day`
-          - `org_postal_code`, `org_city`, `org_country`
-          - `space_uuid`, `space_name`, `space_accessibility_flags`
-          - `venue_uuid`, `venue_name`, `venue_city`, `venue_street`, `venue_house_number`, `venue_postal_code`, `venue_state`, `venue_country`, `venue_lat`, `venue_lon`
-          - `image_uuid`, `image_path`, `image_ai_label`
-          - `categories`, `event_types`, `languages`, `tags`
-          - `price_type`, `min_price`, `max_price`, `currency`
-          - `ticket_link`
-          - `min_age`, `max_age`
-          - `visitor_info_flags`, `release_status`
-        
+        Every event object includes these non-null fields:
+          - search_rank — Search relevance rank.
+          - uuid — Unique event identifier.
+          - date_uuid — Unique event-date identifier.
+          - date_slug — Date identifier: YYYYMMDDHHMM when the date has a time,
+            otherwise the date UUID.
+          - title — Event title.
+          - start_date — Start date in YYYY-MM-DD format.
+          - org_uuid — Organizing organization UUID.
+          - org_name — Organizing organization name.
+
+        Optional properties are omitted when no value is available. Empty
+        arrays with omitempty are also omitted. These include:
+          - start_time — Start time in HH:MM format.
+          - subtitle, summary
+          - end_date, end_time, entry_time, duration, all_day
+          - ticket_link
+          - org_postal_code, org_city, org_country
+          - space_uuid, space_name, space_accessibility_flags
+          - venue_uuid, venue_name, venue_city, venue_street,
+            venue_house_number, venue_postal_code, venue_state,
+            venue_country, venue_lat, venue_lon
+          - image_uuid, image_path, image_ai_label
+          - categories, event_types, languages, tags
+          - price_type, min_price, max_price, currency
+          - min_age, max_age
+          - visitor_info_flags, release_status
+
         ### Pagination properties
-        
-        The `data` object contains the following pagination properties:
-        
-          - `events` — Array of matching events. An empty result is returned as an empty array.
-          - `last_event_date_uuid` — Date UUID of the last returned event; may be `null` when no events are returned.
-          - `last_event_start_at` — Start timestamp of the last returned event; may be `null` when no events are returned.
-          
-          For cursor pagination, pass both `last_event_start_at` and `last_event_date_uuid` from the previous response to retrieve the next page.
 
+        The data object contains:
+          - events — Matching event dates. An empty result is an empty array.
+          - last_event_date_uuid — Date UUID of the last returned event; null
+            when no events are returned.
+          - last_event_start_at — Sort timestamp of the last returned event;
+            null when no events are returned.
+          - pagination_reference_date — The start date used to anchor the
+            result set. It defaults to the current date when start is omitted.
+
+        For cursor pagination, pass both cursor values from the previous
+        response and retain its pagination_reference_date as the next request's
+        start value.
       parameters:
         - $ref: '#/components/parameters/EventOffsetParameter'
         - $ref: '#/components/parameters/EventLimitParameter'
@@ -119,12 +122,31 @@ paths:
         - $ref: '#/components/parameters/EventEventUuidsParameter'
         - $ref: '#/components/parameters/EventGeolistRegionParameter'
         - $ref: '#/components/parameters/EventPortalParameter'
+        - name: geometry
+          in: query
+          required: false
+          description: Portal geometry UUID. Applies only together with portal.
+          schema:
+            type: string
+            format: uuid
+        - name: reverse_order
+          in: query
+          required: false
+          allowEmptyValue: true
+          description: |
+            Include this parameter to reverse event ordering. The API checks
+            whether it is present and ignores its value; even false enables
+            reverse ordering.
+          schema:
+            type: string
 
       responses:
         "200":
           description: Events returned successfully.
           content:
             application/json:
+              schema:
+                $ref: "#/components/schemas/GetEvents.EventsEnvelope200"
               example:
                 service: Uranus API
                 api_version: "1.0"
@@ -171,8 +193,6 @@ paths:
                           genre_id: 0
                         - type_id: 8
                           genre_id: 0
-                      languages: []
-                      tags: []
                       min_age: 18
                       max_age: 111
                       price_type: "not_specified"
@@ -181,6 +201,7 @@ paths:
 
                   last_event_date_uuid: "01a0a91d-17a4-72a5-b67a-46389cc97e27"
                   last_event_start_at: "2026-09-23T14:30:00+02:00"
+                  pagination_reference_date: "2026-09-23"
 
         "400":
           description: Invalid request or filter parameter.
@@ -3127,16 +3148,9 @@ components:
       in: query
       required: false
       description: |-
-        Geographic region filter.
-    
-        The value contains three comma-separated region slugs:
-        country, state or region, city.
-    
-        Example: `deutschland,schleswig-holstein,flensburg`
-    
-        The specified region is used to determine the geographic area for event filtering.
-    
-        This parameter cannot be combined with `portal`.
+        Geographic region filter. The value contains exactly three
+        comma-separated slugs in this order: country, state, region.
+        It cannot be combined with portal.
       schema:
         type: string
 
@@ -7862,10 +7876,6 @@ components:
         - start_date
         - org_uuid
         - org_name
-        - languages
-        - tags
-        - min_age
-        - max_age
       properties:
         search_rank:
           type: number
@@ -7879,114 +7889,68 @@ components:
         title:
           type: string
         subtitle:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         summary:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         start_date:
           type: string
         start_time:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         end_date:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         end_time:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         entry_time:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         duration:
-          anyOf:
-            - type: integer
-            - type: "null"
+          type: integer
         all_day:
-          anyOf:
-            - type: boolean
-            - type: "null"
+          type: boolean
         ticket_link:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         space_uuid:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         space_name:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         space_accessibility_flags:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_uuid:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_name:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_city:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_street:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_house_number:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_postal_code:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_state:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_country:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         venue_lat:
-          anyOf:
-            - type: number
-              format: double
-            - type: "null"
+          type: number
           format: double
         venue_lon:
-          anyOf:
-            - type: number
-              format: double
-            - type: "null"
+          type: number
           format: double
         image_uuid:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         image_path:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         image_ai_label:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         org_uuid:
           type: string
         org_name:
+          type: string
+        org_postal_code:
+          type: string
+        org_city:
+          type: string
+        org_country:
           type: string
         categories:
           type: array
@@ -8005,41 +7969,23 @@ components:
           items:
             type: string
         min_age:
-          anyOf:
-            - type: integer
-            - type: "null"
+          type: integer
         max_age:
-          anyOf:
-            - type: integer
-            - type: "null"
+          type: integer
         price_type:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         min_price:
-          anyOf:
-            - type: number
-              format: double
-            - type: "null"
+          type: number
           format: double
         max_price:
-          anyOf:
-            - type: number
-              format: double
-            - type: "null"
+          type: number
           format: double
         currency:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         visitor_info_flags:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
         release_status:
-          anyOf:
-            - type: string
-            - type: "null"
+          type: string
     GetEvents.EventType:
       type: object
       required:
@@ -8081,6 +8027,7 @@ components:
       type: object
       required:
         - events
+        - pagination_reference_date
       properties:
         events:
           type: array
@@ -8094,6 +8041,49 @@ components:
           anyOf:
             - type: string
             - type: "null"
+        pagination_reference_date:
+          type: string
+          format: date
+          description: Start date anchoring the event result set.
+
+    GetEvents.EventsEnvelope200:
+      type: object
+      required:
+        - service
+        - api_version
+        - response_type
+        - status
+        - timestamp
+        - data
+      properties:
+        service:
+          type: string
+          example: Uranus API
+        api_version:
+          type: string
+          example: "1.0"
+        response_type:
+          type: string
+          example: get-events
+        status:
+          type: integer
+          enum:
+            - 200
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          properties:
+            response_time_ms:
+              type: integer
+              minimum: 0
+          additionalProperties: true
+        data:
+          $ref: "#/components/schemas/GetEvents.EventsResponse"
+        message:
+          type: string
+      additionalProperties: true
 
     GetEvents.EventsWeekResponse:
       type: object
