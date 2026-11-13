@@ -550,21 +550,30 @@ paths:
     get:
       operationId: getChoosableEventOccasions
       summary: Get choosable event occasions
-      description: Returns the available event occasion types localized in the requested language.
+      description: |-
+        Returns event occasion types with names localized for the supplied
+        language. The lang value defaults to en when omitted and is passed to
+        the database without explicit language-code validation.
+
+        Results with id "0" are ordered first; the remaining results are ordered
+        by name. If no rows match, the endpoint returns HTTP 200 with data set
+        to an empty array and metadata.event_occasion_count set to 0.
       parameters:
         - name: lang
           in: query
           required: false
-          description: ISO 639-1 language code used for localized event occasion names.
+          description: >-
+            Language code used to localize event occasion names. Defaults to en
+            when omitted. The handler does not validate its length or supported value.
           schema:
             type: string
-            minLength: 2
-            maxLength: 2
             default: en
             example: en
       responses:
         "200":
-          description: Event occasion types successfully retrieved.
+          description: >-
+            Event occasion types found, or no matching rows. When no rows
+            match, data is an empty array and event_occasion_count is 0.
           content:
             application/json:
               schema:
@@ -700,17 +709,23 @@ paths:
       description: |-
         Returns all legal forms that can be selected for an organization.
 
-        Names and descriptions are localized according to the requested
-        ISO 639-1 language code.
+        Names and descriptions are localized using lang, which defaults to en
+        when omitted. The handler passes the value to the database without
+        explicit language-code validation. Results are ordered by name without
+        regard to case.
+
+        If no rows match, the endpoint returns HTTP 404 with data set to null
+        and the message "No legal forms found".
       parameters:
         - name: lang
           in: query
           required: false
-          description: ISO 639-1 language code. Defaults to English.
+          description: >-
+            Language code used to localize legal form names and descriptions.
+            Defaults to en when omitted. The handler does not validate its
+            length or supported value.
           schema:
             type: string
-            minLength: 2
-            maxLength: 2
             default: en
             example: en
       responses:
@@ -818,17 +833,22 @@ paths:
       description: |-
         Returns all license types that can be selected for content.
 
-        Names and descriptions are localized according to the requested
-        ISO 639-1 language code.
+        Names and descriptions are localized using lang, which defaults to en
+        when omitted. The handler passes the value to the database without
+        explicit language-code validation. Results are ordered by key.
+
+        If no rows match, the endpoint returns HTTP 404 with data set to null
+        and the message "No licenses found".
       parameters:
         - name: lang
           in: query
           required: false
-          description: ISO 639-1 language code. Defaults to English.
+          description: >-
+            Language code used to localize license type names and descriptions.
+            Defaults to en when omitted. The handler does not validate its
+            length or supported value.
           schema:
             type: string
-            minLength: 2
-            maxLength: 2
             default: en
             example: en
       responses:
@@ -841,12 +861,12 @@ paths:
               example:
                 service: Uranus API
                 api_version: "1.0"
-                response_type: get-chooseable-license-types
+                response_type: get-choosable-license-types
                 status: 200
                 timestamp: 2026-09-20T09:45:16Z
                 metadata:
                   language: en
-                  license_count: 10
+                  license_type_count: 10
                   response_time_ms: 3
                 data:
                   - key: all-rights-reserved
@@ -880,7 +900,7 @@ paths:
                     name: Public Domain
                     description: null
         "404":
-          description: No license types found.
+          description: No licenses found.
           content:
             application/json:
               schema:
@@ -888,7 +908,7 @@ paths:
               example:
                 service: Uranus API
                 api_version: "1.0"
-                response_type: get-chooseable-license-types
+                response_type: get-choosable-license-types
                 status: 404
                 timestamp: 2026-09-20T09:45:16Z
                 metadata:
@@ -905,7 +925,7 @@ paths:
               example:
                 service: Uranus API
                 api_version: "1.0"
-                response_type: get-chooseable-license-types
+                response_type: get-choosable-license-types
                 status: 500
                 timestamp: 2026-09-20T09:45:16Z
                 metadata:
@@ -4203,19 +4223,19 @@ components:
       properties:
         language:
           type: string
-          minLength: 2
-          maxLength: 2
-          description: ISO 639-1 language code used for localization.
+          description: >-
+            Language value used for localization. Defaults to en when omitted;
+            the handler does not validate its length or supported value.
           example: en
         event_occasion_count:
           type: integer
           minimum: 0
-          description: Number of available event occasion types.
+          description: Number of matching event occasion types, including zero.
           example: 5
         response_time_ms:
           type: integer
           minimum: 0
-          description: Time required to generate the response in milliseconds.
+          description: Server-side response time in milliseconds.
           example: 12
       description: Metadata returned with the list of event occasion types.
       additionalProperties: false
@@ -4247,6 +4267,7 @@ components:
         - response_type
         - status
         - timestamp
+        - metadata
         - data
       properties:
         service:
@@ -4278,11 +4299,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/GetChoosableEventOccasions.EventOccasionType"
-          description: Available event occasion types.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: Internal server error.
+          description: >-
+            Available event occasion types; an empty array is returned when no
+            rows match the requested language.
       description: Common response envelope used by the API.
       additionalProperties: false
     GetChoosableEventOccasions.GetChoosableEventOccasionsResponse500:
@@ -4372,7 +4391,6 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: Internal server error.
       description: Common response envelope used by the API.
       additionalProperties: false
     GetChoosableEventOccasions.ResponseEnvelope200:
@@ -4415,10 +4433,6 @@ components:
             - {}
             - type: "null"
           description: Response payload.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: Internal server error.
       description: Common response envelope used by the API.
       additionalProperties: false
     GetChoosableEventOccasions.ResponseEnvelope500:
@@ -4815,18 +4829,23 @@ components:
       properties:
         language:
           type: string
-          description: ISO 639-1 language code used for localization.
+          description: >-
+            Language value used for localization. Defaults to en when omitted;
+            the handler does not validate its length or supported value.
           example: en
         legal_form_count:
           type: integer
           minimum: 0
-          description: Number of returned legal forms.
+          description: Number of legal forms returned in a successful response.
           example: 15
         response_time_ms:
           type: integer
           minimum: 0
           description: Server-side response time in milliseconds.
           example: 19
+      required:
+        - language
+        - response_time_ms
       description: Metadata returned by the choosable legal forms endpoint.
       additionalProperties: false
     GetChoosableLegalForms.GetChoosableLegalFormsResponse200:
@@ -4837,6 +4856,7 @@ components:
         - response_type
         - status
         - timestamp
+        - metadata
         - data
       properties:
         service:
@@ -4869,10 +4889,6 @@ components:
           items:
             $ref: "#/components/schemas/GetChoosableLegalForms.LegalForm"
           description: List of available legal forms.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: legal forms found
       additionalProperties: false
     GetChoosableLegalForms.GetChoosableLegalFormsResponse404:
       type: object
@@ -4916,7 +4932,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: legal forms found
+          example: No legal forms found
       additionalProperties: false
     GetChoosableLegalForms.GetChoosableLegalFormsResponse500:
       type: object
@@ -4960,7 +4976,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: legal forms found
+          example: Internal server error
       additionalProperties: false
     GetChoosableLegalForms.LegalForm:
       type: object
@@ -5027,7 +5043,6 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: legal forms found
       additionalProperties: false
     GetChoosableLegalForms.ResponseEnvelope200:
       type: object
@@ -5068,10 +5083,6 @@ components:
             - {}
             - type: "null"
           description: Response payload.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: legal forms found
       additionalProperties: false
     GetChoosableLegalForms.ResponseEnvelope404:
       type: object
@@ -5115,7 +5126,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: legal forms found
+          example: No legal forms found
       additionalProperties: false
     GetChoosableLegalForms.ResponseEnvelope500:
       type: object
@@ -5159,25 +5170,30 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: legal forms found
+          example: Internal server error
       additionalProperties: false
     GetChoosableLicenseTypes.ChoosableLicenseTypesMetadata:
       type: object
       properties:
         language:
           type: string
-          description: ISO 639-1 language code used for localization.
+          description: >-
+            Language value used for localization. Defaults to en when omitted;
+            the handler does not validate its length or supported value.
           example: en
-        license_count:
+        license_type_count:
           type: integer
           minimum: 0
-          description: Number of returned license types.
+          description: Number of license types returned in a successful response.
           example: 10
         response_time_ms:
           type: integer
           minimum: 0
           description: Server-side response time in milliseconds.
           example: 3
+      required:
+        - language
+        - response_time_ms
       description: Metadata returned by the choosable license types endpoint.
       additionalProperties: false
     GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse200:
@@ -5188,6 +5204,7 @@ components:
         - response_type
         - status
         - timestamp
+        - metadata
         - data
       properties:
         service:
@@ -5201,7 +5218,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           enum:
@@ -5220,10 +5237,6 @@ components:
           items:
             $ref: "#/components/schemas/GetChoosableLicenseTypes.LicenseType"
           description: List of available license types.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: license types found
       additionalProperties: false
     GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse404:
       type: object
@@ -5245,7 +5258,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           enum:
@@ -5267,7 +5280,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: license types found
+          example: No licenses found
       additionalProperties: false
     GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse500:
       type: object
@@ -5289,7 +5302,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           enum:
@@ -5311,7 +5324,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: license types found
+          example: Internal server error
       additionalProperties: false
     GetChoosableLicenseTypes.LicenseType:
       type: object
@@ -5360,7 +5373,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           description: HTTP status code of the response.
@@ -5380,7 +5393,6 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: license types found
       additionalProperties: false
     GetChoosableLicenseTypes.ResponseEnvelope200:
       type: object
@@ -5402,7 +5414,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           enum:
@@ -5421,10 +5433,6 @@ components:
             - {}
             - type: "null"
           description: Response payload.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: license types found
       additionalProperties: false
     GetChoosableLicenseTypes.ResponseEnvelope404:
       type: object
@@ -5446,7 +5454,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           enum:
@@ -5468,7 +5476,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: license types found
+          example: No licenses found
       additionalProperties: false
     GetChoosableLicenseTypes.ResponseEnvelope500:
       type: object
@@ -5490,7 +5498,7 @@ components:
         response_type:
           type: string
           description: Identifier of the response type.
-          example: get-chooseable-license-types
+          example: get-choosable-license-types
         status:
           type: integer
           enum:
@@ -5512,7 +5520,7 @@ components:
         message:
           type: string
           description: Human-readable response message.
-          example: license types found
+          example: Internal server error
       additionalProperties: false
     GetChoosableLinkTypes.ChoosableLinkTypesMetadata:
       type: object
