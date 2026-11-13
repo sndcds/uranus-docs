@@ -209,6 +209,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GetEvents.ErrorResponse"
+              example:
+                service: Uranus API
+                api_version: "1.0"
+                response_type: get-events
+                status: 400
+                timestamp: "2026-09-23T05:22:50Z"
+                metadata:
+                  response_time_ms: 6
+                message: "unsupported query parameter: unsupported-param-name"
         "500":
           description: Internal server error.
           content:
@@ -2048,6 +2057,8 @@ paths:
               - `4` — Leisure
               - `5` — Family
               - `6` — Society
+              - `7` — Creative
+              - `8` — Food & drink
 
             Multiple categories can be combined using commas.
           schema:
@@ -2071,6 +2082,12 @@ paths:
             Society:
               summary: Society
               value: "6"
+            Creative:
+              summary: Creative
+              value: "7"
+            Food & drink:
+              summary: Food & drink
+              value: "8"
             Multiple:
               summary: Multiple categories
               value: 1,2,5
@@ -2371,6 +2388,8 @@ paths:
               - `4` — Leisure
               - `5` — Family
               - `6` — Society
+              - `7` — Creative
+              - `8` — Food & drink
 
             Multiple categories can be combined using commas.
           schema:
@@ -2394,6 +2413,12 @@ paths:
             Society:
               summary: Society
               value: "6"
+            Creative:
+              summary: Creative
+              value: "7"
+            Food & drink:
+              summary: Food & drink
+              value: "8"
             Multiple:
               summary: Multiple categories
               value: 1,2,5
@@ -2795,6 +2820,8 @@ components:
           - `4` — Leisure
           - `5` — Family
           - `6` — Society
+          - `7` — Creative
+          - `8` — Food & drink
         
         Multiple categories can be combined using commas.
       schema:
@@ -2818,6 +2845,12 @@ components:
         Society:
           summary: Society
           value: "6"
+        Creative:
+          summary: Creative
+          value: "7"
+        Food & drink:
+          summary: Food & drink
+          value: "8"
         Multiple:
           summary: Multiple categories
           value: 1,2,5
