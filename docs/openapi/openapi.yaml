@@ -267,10 +267,27 @@ paths:
       operationId: filterEvents
       summary: 3. Get events using JSON payload for filtering
       description: |-
-        Returns events matching the supplied JSON filter object.
+        Returns the event list using the supplied JSON filter object. The
+        response data has the same shape as GET /api/events.
 
-        Unknown JSON properties are ignored by the current implementation.
-        Array-valued properties are represented as JSON arrays.
+        Unknown JSON properties are ignored. Known properties must have the
+        JSON types defined by the request schema; invalid values return 400.
+        Array-valued filters are represented as JSON arrays.
+
+        If start is omitted or empty, the API uses the current date. When
+        continuing cursor pagination, provide both last_event_start_at and
+        last_event_date_uuid from the previous response and reuse its
+        pagination_reference_date as start.
+
+        Set reverse_order to true to return events in reverse order. For this
+        JSON endpoint, reverse_order is a boolean; false or omission keeps the
+        default order.
+
+        geometry optionally narrows a portal filter to one portal geometry and
+        only applies when portal is provided. portal cannot be combined with
+        geolist_region. event_types and genres cannot both be non-empty.
+        Geographic radius filtering applies only when lon, lat and radius are
+        all provided.
       parameters: []
       responses:
         "200":
@@ -278,7 +295,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetEvents.EventsResponse"
+                $ref: "#/components/schemas/GetEvents.EventsEnvelope200"
         "400":
           description: Invalid request or filter parameter.
           content:
@@ -7797,13 +7814,22 @@ components:
           type: integer
           format: int64
           minimum: 0
+          description: Number of matching event dates to skip.
+        reverse_order:
+          type: boolean
+          default: false
+          description: Set to true to reverse event ordering.
         limit:
           type: integer
           format: int64
           minimum: 0
+          description: Maximum number of event dates to return; zero returns an empty list.
         start:
-          type: string
-          pattern: ^\d{4}-\d{2}-\d{2}$
+          anyOf:
+            - type: string
+              pattern: ^\d{4}-\d{2}-\d{2}$
+            - const: ""
+          description: Start date in YYYY-MM-DD format. Omitted or empty defaults to the current date.
         end:
           type: string
           pattern: ^\d{4}-\d{2}-\d{2}$
@@ -7862,12 +7888,21 @@ components:
           format: double
         last_event_start_at:
           type: string
+          description: Cursor timestamp; provide together with last_event_date_uuid.
         last_event_date_uuid:
           type: string
+          format: uuid
+          description: Cursor event-date UUID; provide together with last_event_start_at.
         lang:
           type: string
         portal:
           type: string
+          format: uuid
+          description: Portal UUID; cannot be combined with geolist_region.
+        geometry:
+          type: string
+          format: uuid
+          description: Optional portal geometry UUID. Applies only with portal.
         org_uuids:
           type: array
           items:
@@ -7886,9 +7921,17 @@ components:
             type: string
         geolist_region:
           type: string
+          description: Three comma-separated slugs in country,state,region order; cannot be combined with portal.
+      dependentRequired:
+        last_event_start_at:
+          - last_event_date_uuid
+        last_event_date_uuid:
+          - last_event_start_at
       description: |
         Event filtering request used by POST /api/events/filter.
-        Array fields are represented as JSON arrays.
+        Array fields are represented as JSON arrays. event_types and genres
+        cannot both be non-empty. Radius filtering is applied only when lon,
+        lat and radius are all provided.
 
     GetEvents.EventResponse:
       description: |-
