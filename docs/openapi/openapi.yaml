@@ -418,8 +418,8 @@ paths:
         The lang value is passed to the database without explicit language-code
         validation and defaults to en when omitted.
 
-        If no rows match the requested language, the endpoint returns HTTP 200
-        with data set to null and metadata.country_count set to 0.
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.country_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -434,8 +434,8 @@ paths:
       responses:
         "200":
           description: >-
-            Countries found, or no matching rows. When no rows match, data is
-            null and country_count is 0.
+            Countries found, or no matching rows. When no rows match, data is null and
+            country_count is 0.
           content:
             application/json:
               schema:
@@ -488,9 +488,8 @@ paths:
         The lang value is passed to the database without explicit language-code
         validation and defaults to en when omitted.
 
-        If no rows match the requested language, the endpoint returns HTTP 200
-        with an empty data array. metadata.currency_count is included only when
-        at least one currency is returned.
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.currency_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -505,8 +504,8 @@ paths:
       responses:
         "200":
           description: >-
-            Currencies found, or no matching rows. When no rows match, data is
-            an empty array and currency_count is omitted.
+            Currencies found, or no matching rows. When no rows match, data is null and
+            currency_count is 0.
           content:
             application/json:
               schema:
@@ -557,7 +556,7 @@ paths:
 
         Results with id "0" are ordered first; the remaining results are ordered
         by name. If no rows match, the endpoint returns HTTP 200 with data set
-        to an empty array and metadata.event_occasion_count set to 0.
+        to null and metadata.event_occasion_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -572,8 +571,8 @@ paths:
       responses:
         "200":
           description: >-
-            Event occasion types found, or no matching rows. When no rows
-            match, data is an empty array and event_occasion_count is 0.
+            Event occasion types found, or no matching rows. When no rows match, data is
+            null and event_occasion_count is 0.
           content:
             application/json:
               schema:
@@ -627,8 +626,8 @@ paths:
         Language names are localized according to the requested
         ISO 639-1 language code.
 
-        If no languages are found for the requested language, the endpoint
-        still returns HTTP 200 with an empty data array.
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.language_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -642,7 +641,9 @@ paths:
             example: en
       responses:
         "200":
-          description: Languages found, or no languages available for the requested language.
+          description: >-
+            Languages found, or no matching rows. When no rows match, data is null and
+            language_count is 0.
           content:
             application/json:
               schema:
@@ -654,6 +655,7 @@ paths:
                 status: 200
                 timestamp: 2026-09-20T10:17:15Z
                 metadata:
+                  language_count: 5
                   language: en
                   response_time_ms: 3
                 data:
@@ -667,23 +669,6 @@ paths:
                     name: French
                   - id: sv
                     name: Swedish
-        "400":
-          description: Invalid JSON input.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetChoosableLanguages.GetChoosableLanguagesResponse400"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-languages
-                status: 400
-                timestamp: 2026-09-20T10:17:15Z
-                metadata:
-                  language: en
-                  response_time_ms: 3
-                data: null
-                message: Invalid JSON input
         "500":
           description: Internal server error.
           content:
@@ -714,7 +699,7 @@ paths:
         explicit language-code validation. Results are ordered by name without
         regard to case.
 
-        If no rows match, the endpoint returns HTTP 200, with data set to null
+        If no rows match, the endpoint returns HTTP 200 with data set to null
         and metadata.legal_form_count set to 0.
       parameters:
         - name: lang
@@ -730,7 +715,9 @@ paths:
             example: en
       responses:
         "200":
-          description: Legal forms found.
+          description: >-
+            Legal forms found, or no matching rows. When no rows match, data is null and
+            legal_form_count is 0.
           content:
             application/json:
               schema:
@@ -820,7 +807,7 @@ paths:
         when omitted. The handler passes the value to the database without
         explicit language-code validation. Results are ordered by key.
 
-        If no rows match, the endpoint returns HTTP 200, with data set to null
+        If no rows match, the endpoint returns HTTP 200 with data set to null
         and metadata.license_type_count set to 0.
       parameters:
         - name: lang
@@ -836,7 +823,9 @@ paths:
             example: en
       responses:
         "200":
-          description: License types found.
+          description: >-
+            License types found, or no matching rows. When no rows match, data is null and
+            license_type_count is 0.
           content:
             application/json:
               schema:
@@ -858,6 +847,9 @@ paths:
 
         The returned names are localized according to the requested
         ISO 639-1 language code.
+
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.link_type_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -873,7 +865,9 @@ paths:
             example: en
       responses:
         "200":
-          description: Link types found.
+          description: >-
+            Link types found, or no matching rows. When no rows match, data is null and
+            link_type_count is 0.
           content:
             application/json:
               schema:
@@ -920,22 +914,6 @@ paths:
                   - key: youtube
                     name: YouTube
                 message: Link types found
-        "404":
-          description: No link types were found for the requested language.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetChoosableLinkTypes.ResponseEnvelope404"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-link-types
-                status: 404
-                timestamp: 2026-09-20T08:07:43Z
-                metadata:
-                  language: xx
-                  response_time_ms: 2
-                message: No link types found
         "500":
           description: Internal server error.
           content:
@@ -957,7 +935,11 @@ paths:
     get:
       operationId: getChoosableOrgs
       summary: Get choosable organizations
-      description: Returns organizations matching the optional name and geographic filters.
+      description: |-
+        Returns organizations matching the optional name and geographic filters.
+
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.organization_count set to 0.
       parameters:
         - name: name
           in: query
@@ -999,7 +981,9 @@ paths:
             example: 10000
       responses:
         "200":
-          description: Organizations successfully retrieved.
+          description: >-
+            Organizations found, or no matching rows. When no rows match, data is null and
+            organization_count is 0.
           content:
             application/json:
               schema:
@@ -1011,7 +995,7 @@ paths:
                 status: 200
                 timestamp: 2026-09-20T12:24:00Z
                 metadata:
-                  venue_count: 3
+                  organization_count: 3
                   response_time_ms: 15
                 data:
                   - uuid: 550e8400-e29b-41d4-a716-446655440000
@@ -1055,6 +1039,9 @@ paths:
 
         Names and descriptions are localized according to the requested
         ISO 639-1 language code.
+
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.space_type_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -1068,7 +1055,9 @@ paths:
             example: da
       responses:
         "200":
-          description: Space types found.
+          description: >-
+            Space types found, or no matching rows. When no rows match, data is null and
+            space_type_count is 0.
           content:
             application/json:
               schema:
@@ -1187,22 +1176,6 @@ paths:
                     name: Øvelokale
                     description: Et lokale hvor musikere, skuespillere eller grupper øver og forbereder sig til
                       optrædener
-        "404":
-          description: No space types found.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetChoosableSpaceTypes.GetChoosableSpaceTypesResponse404"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-space-types
-                status: 404
-                timestamp: 2026-09-20T09:15:55Z
-                metadata:
-                  language: xx
-                  response_time_ms: 1
-                message: No space types found
         "500":
           description: Internal server error.
           content:
@@ -1230,8 +1203,8 @@ paths:
         State names are returned according to the data stored for the country.
         The country is selected using its country code.
 
-        If no states are found for the specified country, the endpoint
-        returns HTTP 200 with an empty data array.
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.state_count set to 0.
       parameters:
         - name: country-code
           in: query
@@ -1245,7 +1218,9 @@ paths:
             example: DEU
       responses:
         "200":
-          description: States found, or no states available for the specified country.
+          description: >-
+            States found, or no matching rows. When no rows match, data is null and
+            state_count is 0.
           content:
             application/json:
               schema:
@@ -1298,6 +1273,9 @@ paths:
 
         The venue type names and descriptions are localized according
         to the requested ISO 639-1 language code.
+
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.venue_type_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -1313,7 +1291,9 @@ paths:
             example: da
       responses:
         "200":
-          description: Venue types found.
+          description: >-
+            Venue types found, or no matching rows. When no rows match, data is null and
+            venue_type_count is 0.
           content:
             application/json:
               schema:
@@ -1437,22 +1417,6 @@ paths:
                   - key: workshop
                     name: Værksted
                     description: null
-        "404":
-          description: No venue types were found for the requested language.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetChoosableVenueTypes.ResponseEnvelope404"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-venue-types
-                status: 404
-                timestamp: 2026-09-20T09:03:41Z
-                metadata:
-                  language: xx
-                  response_time_ms: 1
-                message: No venue types found
         "500":
           description: Internal server error.
           content:
@@ -1474,7 +1438,11 @@ paths:
     get:
       operationId: getChoosableVenues
       summary: Get choosable venues
-      description: Returns venues matching the optional name and geographic filters.
+      description: |-
+        Returns venues matching the optional name and geographic filters.
+
+        If no rows match, the endpoint returns HTTP 200 with data set to null
+        and metadata.venue_count set to 0.
       parameters:
         - name: name
           in: query
@@ -1515,7 +1483,9 @@ paths:
             example: 10
       responses:
         "200":
-          description: Venues successfully retrieved.
+          description: >-
+            Venues found, or no matching rows. When no rows match, data is null and
+            venue_count is 0.
           content:
             application/json:
               schema:
@@ -2757,15 +2727,15 @@ components:
       description: |
         Event-time filter. The value must contain a start time and an end time,
         separated by a comma.
-        
+
         Supported time formats:
           - `HH,HH` for hours in 24-hour format.
           - `HHMM,HHMM` for hours and minutes in 24-hour format.
-        
+
         Examples:
           - `10,14` matches events from 10:00 to 14:00.
           - `1030,1545` matches events from 10:30 to 15:45.
-        
+
         The start time must be before the end time.
       schema:
         type: string
@@ -2783,7 +2753,7 @@ components:
       required: false
       description: |
         Comma-separated list of one or more category IDs.
-        
+
         Available categories:
           - `1` — Culture
           - `2` — Education
@@ -2793,7 +2763,7 @@ components:
           - `6` — Society
           - `7` — Creative
           - `8` — Food & drink
-        
+
         Multiple categories can be combined using commas.
       schema:
         type: string
@@ -2840,11 +2810,11 @@ components:
       required: false
       description: |-
         Venue name search filter.
-        
+
         The value can contain one or more names, separated by commas.
         Each name may optionally start or end with `*` as a wildcard.
         A wildcard matches any number of characters.
-        
+
         Examples:
         - `theater` — exact name match
         - `theater,museum` — matches either name
@@ -2861,9 +2831,9 @@ components:
       required: false
       description: |-
         One or more space types, separated by commas.
-        
+
         Known space types can be fetched from `/api/choosable-space-types`.
-        
+
         Examples:
         - `club` — a single space type
         - `multifunctional_room,cafe` — multiple space types
@@ -2891,13 +2861,13 @@ components:
       required: false
       description: |
         Comma-separated list of postal code patterns.
-        
+
         Use `*` as a wildcard for partial matching:
           - `249*` matches postal codes starting with `249`.
           - `*509` matches postal codes ending with `509`.
           - `*608*` matches postal codes containing `608`.
           - `249*,2348*,*6000*` matches any of the specified patterns.
-        
+
         Without `*`, an exact match is performed.
       schema:
         type: string
@@ -2984,7 +2954,7 @@ components:
       required: false
       description: |-
         Comma-separated tags.
-        
+
         Example: `theater,musical,family`
       schema:
         type: string
@@ -3601,7 +3571,7 @@ components:
         country_count:
           type: integer
           minimum: 0
-          description: Number of countries returned.
+          description: Number of countries returned, including zero.
           example: 249
         language:
           type: string
@@ -3671,16 +3641,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T09:48:48Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableCountries.ChoosableCountriesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableCountries.ChoosableCountriesMetadata"
+            - type: object
+              required:
+                - country_count
         data:
           anyOf:
             - type: array
               items:
                 $ref: "#/components/schemas/GetChoosableCountries.Country"
             - type: "null"
-          description: >-
-            List of available countries, or null when no rows match the
-            requested language.
+          description: Countries returned, or null when no rows match.
       additionalProperties: false
     GetChoosableCountries.GetChoosableCountriesResponse500:
       type: object
@@ -3862,9 +3834,7 @@ components:
         currency_count:
           type: integer
           minimum: 0
-          description: >-
-            Number of currencies returned. Included only when at least one
-            currency matches the requested language.
+          description: Number of currencies returned, including zero.
           example: 3
         language:
           type: string
@@ -3937,14 +3907,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T10:39:00Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableCurrencies.ChoosableCurrenciesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableCurrencies.ChoosableCurrenciesMetadata"
+            - type: object
+              required:
+                - currency_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableCurrencies.Currency"
-          description: >-
-            Available currencies; an empty array is returned when no rows match
-            the requested language.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableCurrencies.Currency"
+            - type: "null"
+          description: Currencies returned, or null when no rows match.
       description: Common response envelope used by the API.
       additionalProperties: false
     GetChoosableCurrencies.GetChoosableCurrenciesResponse500:
@@ -4132,7 +4106,6 @@ components:
       type: object
       required:
         - language
-        - event_occasion_count
         - response_time_ms
       properties:
         language:
@@ -4144,7 +4117,7 @@ components:
         event_occasion_count:
           type: integer
           minimum: 0
-          description: Number of matching event occasion types, including zero.
+          description: Number of event occasion types returned, including zero.
           example: 5
         response_time_ms:
           type: integer
@@ -4208,14 +4181,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T11:37:00Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableEventOccasions.ChoosableEventOccasionsMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableEventOccasions.ChoosableEventOccasionsMetadata"
+            - type: object
+              required:
+                - event_occasion_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableEventOccasions.EventOccasionType"
-          description: >-
-            Available event occasion types; an empty array is returned when no
-            rows match the requested language.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableEventOccasions.EventOccasionType"
+            - type: "null"
+          description: Event occasion types returned, or null when no rows match.
       description: Common response envelope used by the API.
       additionalProperties: false
     GetChoosableEventOccasions.GetChoosableEventOccasionsResponse500:
@@ -4398,6 +4375,11 @@ components:
     GetChoosableLanguages.ChoosableLanguagesMetadata:
       type: object
       properties:
+        language_count:
+          type: integer
+          minimum: 0
+          description: Number of languages returned, including zero.
+          example: 0
         language:
           type: string
           description: ISO 639-1 language code used for localization.
@@ -4443,12 +4425,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T10:17:15Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableLanguages.ChoosableLanguagesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableLanguages.ChoosableLanguagesMetadata"
+            - type: object
+              required:
+                - language_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableLanguages.Language"
-          description: List of available languages.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableLanguages.Language"
+            - type: "null"
+          description: Languages returned, or null when no rows match.
         message:
           type: string
           description: Human-readable response message.
@@ -4750,7 +4738,7 @@ components:
         legal_form_count:
           type: integer
           minimum: 0
-          description: Number of legal forms returned in a successful response.
+          description: Number of legal forms returned, including zero.
           example: 15
         response_time_ms:
           type: integer
@@ -4797,12 +4785,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T09:29:04Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableLegalForms.ChoosableLegalFormsMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableLegalForms.ChoosableLegalFormsMetadata"
+            - type: object
+              required:
+                - legal_form_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableLegalForms.LegalForm"
-          description: List of available legal forms.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableLegalForms.LegalForm"
+            - type: "null"
+          description: Legal forms returned, or null when no rows match.
       additionalProperties: false
     GetChoosableLegalForms.GetChoosableLegalFormsResponse500:
       type: object
@@ -5054,7 +5048,7 @@ components:
         license_type_count:
           type: integer
           minimum: 0
-          description: Number of license types returned in a successful response.
+          description: Number of license types returned, including zero.
           example: 10
         response_time_ms:
           type: integer
@@ -5101,12 +5095,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T09:45:16Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableLicenseTypes.ChoosableLicenseTypesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableLicenseTypes.ChoosableLicenseTypesMetadata"
+            - type: object
+              required:
+                - license_type_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableLicenseTypes.LicenseType"
-          description: List of available license types.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableLicenseTypes.LicenseType"
+            - type: "null"
+          description: License types returned, or null when no rows match.
       additionalProperties: false
     GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse500:
       type: object
@@ -5358,7 +5358,7 @@ components:
         link_type_count:
           type: integer
           minimum: 0
-          description: Number of returned link types.
+          description: Number of link types returned, including zero.
           example: 15
         response_time_ms:
           type: integer
@@ -5396,12 +5396,18 @@ components:
           format: date-time
           example: 2026-09-20T08:07:43Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableLinkTypes.ChoosableLinkTypesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableLinkTypes.ChoosableLinkTypesMetadata"
+            - type: object
+              required:
+                - link_type_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableLinkTypes.LinkType"
-          description: Response payload.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableLinkTypes.LinkType"
+            - type: "null"
+          description: Link types returned, or null when no rows match.
         message:
           type: string
           example: Link types found
@@ -5583,13 +5589,12 @@ components:
     GetChoosableOrgs.ChoosableOrgsMetadata:
       type: object
       required:
-        - venue_count
         - response_time_ms
       properties:
-        venue_count:
+        organization_count:
           type: integer
           minimum: 0
-          description: Number of organizations matching the requested filters.
+          description: Number of organizations returned, including zero.
           example: 3
         response_time_ms:
           type: integer
@@ -5632,12 +5637,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T12:24:00Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableOrgs.ChoosableOrgsMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableOrgs.ChoosableOrgsMetadata"
+            - type: object
+              required:
+                - organization_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableOrgs.Organization"
-          description: List of matching organizations.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableOrgs.Organization"
+            - type: "null"
+          description: Organizations returned, or null when no rows match.
         message:
           type: string
           description: Human-readable response message.
@@ -5873,7 +5884,7 @@ components:
         space_type_count:
           type: integer
           minimum: 0
-          description: Number of returned space types.
+          description: Number of space types returned, including zero.
           example: 30
         response_time_ms:
           type: integer
@@ -5916,12 +5927,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T09:15:55Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableSpaceTypes.ChoosableSpaceTypesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableSpaceTypes.ChoosableSpaceTypesMetadata"
+            - type: object
+              required:
+                - space_type_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableSpaceTypes.SpaceType"
-          description: Response payload.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableSpaceTypes.SpaceType"
+            - type: "null"
+          description: Space types returned, or null when no rows match.
         message:
           type: string
           description: Human-readable response message.
@@ -6224,7 +6241,7 @@ components:
         state_count:
           type: integer
           minimum: 0
-          description: Number of states or administrative regions returned.
+          description: Number of states returned, including zero.
           example: 16
         response_time_ms:
           type: integer
@@ -6267,12 +6284,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T10:09:03Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableStates.ChoosableStatesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableStates.ChoosableStatesMetadata"
+            - type: object
+              required:
+                - state_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableStates.State"
-          description: List of states or administrative regions.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableStates.State"
+            - type: "null"
+          description: States returned, or null when no rows match.
         message:
           type: string
           description: Human-readable response message.
@@ -6482,7 +6505,7 @@ components:
         venue_type_count:
           type: integer
           minimum: 0
-          description: Number of returned venue types.
+          description: Number of venue types returned, including zero.
           example: 35
         response_time_ms:
           type: integer
@@ -6520,12 +6543,18 @@ components:
           format: date-time
           example: 2026-09-20T09:03:41Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableVenueTypes.ChoosableVenueTypesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableVenueTypes.ChoosableVenueTypesMetadata"
+            - type: object
+              required:
+                - venue_type_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableVenueTypes.VenueType"
-          description: Response payload.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableVenueTypes.VenueType"
+            - type: "null"
+          description: Venue types returned, or null when no rows match.
         message:
           type: string
           example: Venue types found
@@ -6713,13 +6742,12 @@ components:
     GetChoosableVenues.ChoosableVenuesMetadata:
       type: object
       required:
-        - venue_count
         - response_time_ms
       properties:
         venue_count:
           type: integer
           minimum: 0
-          description: Number of venues matching the requested filters.
+          description: Number of venues returned, including zero.
           example: 3
         response_time_ms:
           type: integer
@@ -6762,12 +6790,18 @@ components:
           description: Time at which the response was generated.
           example: 2026-09-20T12:00:00Z
         metadata:
-          $ref: "#/components/schemas/GetChoosableVenues.ChoosableVenuesMetadata"
+          allOf:
+            - $ref: "#/components/schemas/GetChoosableVenues.ChoosableVenuesMetadata"
+            - type: object
+              required:
+                - venue_count
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetChoosableVenues.Venue"
-          description: List of matching venues.
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/GetChoosableVenues.Venue"
+            - type: "null"
+          description: Venues returned, or null when no rows match.
         message:
           type: string
           description: Human-readable response message.
