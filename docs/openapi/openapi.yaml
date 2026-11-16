@@ -5713,7 +5713,7 @@ components:
           description: Response payload.
         message:
           type: string
-          example: Link types found
+          example: No link types found
       additionalProperties: false
     GetChoosableLinkTypes.ResponseEnvelope500:
       type: object
@@ -5752,7 +5752,7 @@ components:
           description: Response payload.
         message:
           type: string
-          example: Link types found
+          example: Internal server error
       additionalProperties: false
     GetChoosableOrgs.ChoosableOrgsMetadata:
       type: object
