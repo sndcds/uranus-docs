@@ -714,8 +714,8 @@ paths:
         explicit language-code validation. Results are ordered by name without
         regard to case.
 
-        If no rows match, the endpoint returns HTTP 404 with data set to null
-        and the message "No legal forms found".
+        If no rows match, the endpoint returns HTTP 200, with data set to null
+        and metadata.legal_form_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -791,23 +791,6 @@ paths:
                   - key: stock_corporation
                     name: Stock Corporation / Joint-stock Company
                     description: null
-        "404":
-          description: No legal forms found.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetChoosableLegalForms.GetChoosableLegalFormsResponse404"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-legal-forms
-                status: 404
-                timestamp: 2026-09-20T09:29:04Z
-                metadata:
-                  language: xx
-                  response_time_ms: 1
-                data: null
-                message: No legal forms found
         "500":
           description: Internal server error.
           content:
@@ -837,8 +820,8 @@ paths:
         when omitted. The handler passes the value to the database without
         explicit language-code validation. Results are ordered by key.
 
-        If no rows match, the endpoint returns HTTP 404 with data set to null
-        and the message "No licenses found".
+        If no rows match, the endpoint returns HTTP 200, with data set to null
+        and metadata.license_type_count set to 0.
       parameters:
         - name: lang
           in: query
@@ -858,81 +841,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse200"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-license-types
-                status: 200
-                timestamp: 2026-09-20T09:45:16Z
-                metadata:
-                  language: en
-                  license_type_count: 10
-                  response_time_ms: 3
-                data:
-                  - key: all-rights-reserved
-                    name: All Rights Reserved
-                    description: null
-                  - key: cc-by
-                    name: CC BY – Attribution
-                    description: null
-                  - key: cc-by-nc
-                    name: CC BY-NC – Attribution-NonCommercial
-                    description: null
-                  - key: cc-by-nc-nd
-                    name: CC BY-NC-ND – Attribution-NonCommercial-NoDerivatives
-                    description: null
-                  - key: cc-by-nc-sa
-                    name: CC BY-NC-SA – Attribution-NonCommercial-ShareAlike
-                    description: null
-                  - key: cc-by-nd
-                    name: CC BY-ND – Attribution-NoDerivatives
-                    description: null
-                  - key: cc-by-sa
-                    name: CC BY-SA – Attribution-ShareAlike
-                    description: null
-                  - key: cc0
-                    name: CC0 – Public Domain
-                    description: null
-                  - key: mit
-                    name: MIT License
-                    description: null
-                  - key: pd
-                    name: Public Domain
-                    description: null
-        "404":
-          description: No licenses found.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse404"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-license-types
-                status: 404
-                timestamp: 2026-09-20T09:45:16Z
-                metadata:
-                  language: xx
-                  response_time_ms: 1
-                data: null
-                message: No licenses found
         "500":
           description: Internal server error.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse500"
-              example:
-                service: Uranus API
-                api_version: "1.0"
-                response_type: get-choosable-license-types
-                status: 500
-                timestamp: 2026-09-20T09:45:16Z
-                metadata:
-                  language: en
-                  response_time_ms: 3
-                data: null
-                message: Internal server error
 
   /api/choosable-link-types:
     get:
@@ -4890,50 +4804,6 @@ components:
             $ref: "#/components/schemas/GetChoosableLegalForms.LegalForm"
           description: List of available legal forms.
       additionalProperties: false
-    GetChoosableLegalForms.GetChoosableLegalFormsResponse404:
-      type: object
-      required:
-        - service
-        - api_version
-        - response_type
-        - status
-        - timestamp
-      properties:
-        service:
-          type: string
-          description: Name of the API service.
-          example: Uranus API
-        api_version:
-          type: string
-          description: API version.
-          example: "1.0"
-        response_type:
-          type: string
-          description: Identifier of the response type.
-          example: get-choosable-legal-forms
-        status:
-          type: integer
-          enum:
-            - 404
-          description: HTTP status code of the response.
-          example: 404
-        timestamp:
-          type: string
-          format: date-time
-          description: Time at which the response was generated.
-          example: 2026-09-20T09:29:04Z
-        metadata:
-          $ref: "#/components/schemas/GetChoosableLegalForms.ChoosableLegalFormsMetadata"
-        data:
-          anyOf:
-            - {}
-            - type: "null"
-          description: Response payload.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: No legal forms found
-      additionalProperties: false
     GetChoosableLegalForms.GetChoosableLegalFormsResponse500:
       type: object
       required:
@@ -5237,50 +5107,6 @@ components:
           items:
             $ref: "#/components/schemas/GetChoosableLicenseTypes.LicenseType"
           description: List of available license types.
-      additionalProperties: false
-    GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse404:
-      type: object
-      required:
-        - service
-        - api_version
-        - response_type
-        - status
-        - timestamp
-      properties:
-        service:
-          type: string
-          description: Name of the API service.
-          example: Uranus API
-        api_version:
-          type: string
-          description: API version.
-          example: "1.0"
-        response_type:
-          type: string
-          description: Identifier of the response type.
-          example: get-choosable-license-types
-        status:
-          type: integer
-          enum:
-            - 404
-          description: HTTP status code of the response.
-          example: 404
-        timestamp:
-          type: string
-          format: date-time
-          description: Time at which the response was generated.
-          example: 2026-09-20T09:45:16Z
-        metadata:
-          $ref: "#/components/schemas/GetChoosableLicenseTypes.ChoosableLicenseTypesMetadata"
-        data:
-          anyOf:
-            - {}
-            - type: "null"
-          description: Response payload.
-        message:
-          type: string
-          description: Human-readable response message.
-          example: No licenses found
       additionalProperties: false
     GetChoosableLicenseTypes.GetChoosableLicenseTypesResponse500:
       type: object
