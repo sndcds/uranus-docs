@@ -1923,11 +1923,13 @@ paths:
       operationId: getEventsGeoJSON
       summary: Get event venues as GeoJSON
       description: |-
-        Returns venues with matching events as a GeoJSON FeatureCollection.
-        Geometry coordinates are [longitude, latitude].
+        Returns an API response envelope whose data contains a GeoJSON
+        FeatureCollection. Geometry coordinates are [longitude, latitude].
 
         Venues for which valid point geometry cannot be produced are skipped.
-        If no venues are found, the API returns 204 No Content.
+        The API returns 204 No Content when no feature with usable point
+        geometry remains. `week_start` is not a supported query parameter and
+        causes a 400 response.
       parameters:
         - name: offset
           in: query
@@ -2179,13 +2181,6 @@ paths:
           description: Language/locale value accepted by the event filter.
           schema:
             type: string
-        - name: week_start
-          in: query
-          required: false
-          description: Optional week start date in YYYY-MM-DD format.
-          schema:
-            type: string
-            pattern: ^\d{4}-\d{2}-\d{2}$
         - name: org_uuids
           in: query
           required: false
@@ -2210,14 +2205,7 @@ paths:
           description: Comma-separated event UUID values.
           schema:
             type: string
-        - name: geolist_region
-          in: query
-          required: false
-          description: |
-            Geographic region filter. Must contain exactly three comma-separated
-            components (lon,lat,radius). Cannot be combined with portal.
-          schema:
-            type: string
+        - $ref: "#/components/parameters/EventGeolistRegionParameter"
         - name: portal
           in: query
           required: false
@@ -2226,18 +2214,15 @@ paths:
             type: string
       responses:
         "200":
-          description: GeoJSON FeatureCollection returned successfully.
+          description: API response envelope containing a GeoJSON FeatureCollection in data.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetEvents.GeoJSONFeatureCollection"
-            application/geo+json:
-              schema:
-                $ref: "#/components/schemas/GetEvents.GeoJSONFeatureCollection"
+                $ref: "#/components/schemas/GetEvents.GeoJSONEnvelope200"
         "204":
-          description: No venues found.
+          description: No feature with usable point geometry remains after filtering.
         "400":
-          description: Invalid request or filter parameter.
+          description: Invalid request or unsupported filter parameter, including week_start.
           content:
             application/json:
               schema:
@@ -2256,9 +2241,11 @@ paths:
       operationId: getEventTypeSummary
       summary: Get event type and genre summary
       description: |-
-        Returns aggregate counts for event types and genres matching the
-        supplied filters. The limit and offset parameters are accepted by
-        the filter parser but are ignored by this endpoint.
+        Returns an API response envelope whose data contains total_event_count,
+        type_summary, and genre_summary for matching events. The limit and
+        offset parameters are accepted by the filter parser but are ignored by
+        this endpoint. `week_start` is not a supported query parameter and
+        causes a 400 response.
       parameters:
         - name: offset
           in: query
@@ -2510,13 +2497,6 @@ paths:
           description: Language/locale value accepted by the event filter.
           schema:
             type: string
-        - name: week_start
-          in: query
-          required: false
-          description: Optional week start date in YYYY-MM-DD format.
-          schema:
-            type: string
-            pattern: ^\d{4}-\d{2}-\d{2}$
         - name: org_uuids
           in: query
           required: false
@@ -2541,14 +2521,7 @@ paths:
           description: Comma-separated event UUID values.
           schema:
             type: string
-        - name: geolist_region
-          in: query
-          required: false
-          description: |
-            Geographic region filter. Must contain exactly three comma-separated
-            components (lon,lat,radius). Cannot be combined with portal.
-          schema:
-            type: string
+        - $ref: "#/components/parameters/EventGeolistRegionParameter"
         - name: portal
           in: query
           required: false
@@ -2557,13 +2530,13 @@ paths:
             type: string
       responses:
         "200":
-          description: Summary returned successfully.
+          description: API response envelope containing the event type and genre summary in data.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetEvents.EventTypeSummaryResponse"
+                $ref: "#/components/schemas/GetEvents.EventTypeSummaryEnvelope200"
         "400":
-          description: Invalid request or filter parameter.
+          description: Invalid request or unsupported filter parameter, including week_start.
           content:
             application/json:
               schema:
@@ -7975,14 +7948,56 @@ components:
       properties:
         total_event_count:
           type: integer
+          minimum: 0
+          description: Total number of events matching the supplied filters.
         type_summary:
           type: array
           items:
             $ref: "#/components/schemas/GetEvents.SummaryEntry"
+          description: Matching event counts grouped by event type ID.
         genre_summary:
           type: array
           items:
             $ref: "#/components/schemas/GetEvents.SummaryEntry"
+          description: Matching event counts grouped by genre ID.
+
+    GetEvents.EventTypeSummaryEnvelope200:
+      type: object
+      required:
+        - service
+        - api_version
+        - response_type
+        - status
+        - timestamp
+        - data
+      properties:
+        service:
+          type: string
+          example: Uranus API
+        api_version:
+          type: string
+          example: "1.0"
+        response_type:
+          type: string
+        status:
+          type: integer
+          enum:
+            - 200
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          properties:
+            response_time_ms:
+              type: integer
+              minimum: 0
+          additionalProperties: true
+        data:
+          $ref: "#/components/schemas/GetEvents.EventTypeSummaryResponse"
+        message:
+          type: string
+      additionalProperties: true
     GetEvents.EventVenueSummaryResponse:
       type: object
       required:
@@ -8093,6 +8108,43 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/GetEvents.GeoJSONFeature"
+    GetEvents.GeoJSONEnvelope200:
+      type: object
+      required:
+        - service
+        - api_version
+        - response_type
+        - status
+        - timestamp
+        - data
+      properties:
+        service:
+          type: string
+          example: Uranus API
+        api_version:
+          type: string
+          example: "1.0"
+        response_type:
+          type: string
+        status:
+          type: integer
+          enum:
+            - 200
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          properties:
+            response_time_ms:
+              type: integer
+              minimum: 0
+          additionalProperties: true
+        data:
+          $ref: "#/components/schemas/GetEvents.GeoJSONFeatureCollection"
+        message:
+          type: string
+      additionalProperties: true
     GetEvents.GeoJSONGeometry:
       type: object
       required:
@@ -8391,8 +8443,11 @@ components:
       properties:
         id:
           type: integer
+          description: Event type or genre ID, depending on which summary contains the entry.
         count:
           type: integer
+          minimum: 0
+          description: Number of matching events for this ID.
     GetEvents.VenueSummaryEntry:
       type: object
       required:
